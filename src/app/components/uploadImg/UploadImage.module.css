@@ -1,0 +1,87 @@
+.uploadContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: "Inter", sans-serif;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+}
+
+.uploadBox {
+  position: relative;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  transition: border-color 0.3s, background-color 0.3s;
+  cursor: pointer;
+}
+
+.uploadBox:hover {
+  border-color: #007bff;
+  background-color: #eef5ff;
+}
+
+.inputField {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.uploadIcon {
+  color: #007bff;
+  margin-bottom: 8px;
+}
+
+.previewContainer {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.previewImage {
+  width: 160px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.removeButton:hover {
+  background-color: #d32f2f;
+  transform: scale(1.03);
+}
+
+.errorMessage {
+  color: #d32f2f;
+  font-size: 0.9rem;
+}

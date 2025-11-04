@@ -1,0 +1,84 @@
+.footerContainer {
+ 
+  background-color: #1e293b; 
+  color: white;
+  padding-top: 2rem;
+  padding-bottom: 2rem; 
+  margin-top: 2.5rem; 
+}
+
+
+.container {
+  max-width: 64rem; 
+  margin-left: auto;
+  margin-right: auto; 
+  padding-left: 1.5rem; 
+  padding-right: 1.5rem; 
+}
+
+
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr; 
+  gap: 1.5rem; 
+  text-align: center;
+}
+
+
+@media (min-width: 768px) { 
+  .contentGrid {
+    grid-template-columns: repeat(3, 1fr); 
+    text-align: left; 
+  }
+}
+
+
+.sectionTitle {
+  
+  font-weight: 600; 
+  font-size: 1.125rem; 
+  margin-bottom: 0.5rem; 
+}
+
+
+.descriptionText {
+  
+  font-size: 0.875rem; 
+  color: #d1d5db; 
+}
+
+
+.copyrightText {
+  
+  text-align: center;
+  margin-top: 1.5rem; 
+  font-size: 0.875rem; 
+  color: #9ca3af; 
+}
+
+
+.suggestionButton {
+  
+  background-color: #facc15; 
+  color: #111827; 
+  padding-left: 1rem; 
+  padding-right: 1rem; 
+  padding-top: 0.25rem; 
+  padding-bottom: 0.25rem; 
+  border-radius: 9999px; 
+  font-weight: 600; 
+  transition: background-color 0.15s ease-in-out; 
+  cursor: pointer;
+  border: none;
+}
+
+.suggestionButton:hover {
+  background-color: #fde047; 
+}
+
+.buttonWrapper {
+  
+  text-align: center;
+  margin-top: 0.75rem; 
+}
