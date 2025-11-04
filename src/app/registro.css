@@ -1,0 +1,187 @@
+/* ===== Estilo geral ===== */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #f3f4f6;
+}
+
+/* ===== Header ===== */
+.header {
+  background-color: #2563eb;
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.home-link {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.subtitulo {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* ===== Conteúdo ===== */
+.conteudo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+.form-container {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Alternador ===== */
+.alternador {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.botao-tipo {
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 160px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.botao-tipo:hover {
+  background-color: #f9fafb;
+}
+
+.botao-tipo.ativo {
+  border: 2px solid #2563eb;
+  background-color: #eff6ff;
+}
+
+.icone {
+  font-size: 32px;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.rotulo {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.descricao {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ===== Formulário ===== */
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 0.3rem;
+}
+
+.campo input,
+.campo select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid #2563eb;
+}
+
+/* ===== Botão principal ===== */
+.botao-enviar {
+  width: 100%;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.botao-enviar:hover {
+  background-color: #1e40af;
+}
+
+/* ===== Footer ===== */
+.footer {
+  background-color: #1e293b;
+  color: white;
+  padding: 3rem 1rem;
+  margin-top: 3rem;
+}
+
+.footer-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.footer-copy {
+  text-align: center;
+  color: #94a3b8;
+  margin-top: 1.5rem;
+}
+
+.footer-botao {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.botao-sugestao {
+  background-color: #facc15;
+  color: #1f2937;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.botao-sugestao:hover {
+  background-color: #fde047;
+}
