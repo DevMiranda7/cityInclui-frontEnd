@@ -1,13 +1,10 @@
 import Link from 'next/link';
 import styles from './Home.module.css';
-import Header from './components/header/Header';
-import Footer from './components/footer/Footer';
 
 
 export default function HomePage() {
   return (
     <div className={styles.pageContainer}>
-      <Header />
 
       <main className={styles.mainContent}>
         <div className={styles.welcomeBox}>
@@ -21,8 +18,6 @@ export default function HomePage() {
           </Link>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

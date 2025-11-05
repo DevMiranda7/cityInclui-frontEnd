@@ -1,15 +1,17 @@
-import "./globals.css";
+import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
 import { SpeechProvider } from "./context/SpeechContext";
-
-export const metadata = {
-  title: "CityInclui",
-};
+import "./globals.css";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        <SpeechProvider>{children}</SpeechProvider>
+        <SpeechProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </SpeechProvider>
       </body>
     </html>
   );

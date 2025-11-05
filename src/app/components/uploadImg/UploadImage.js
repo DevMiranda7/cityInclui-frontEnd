@@ -3,7 +3,7 @@ import { Upload, X } from "lucide-react";
 import styles from "./UploadImage.module.css";
 import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
 
-export default function UploadImagem() {
+export default function UploadImagem({onFileSelect}) {
   const [foto, setFoto] = useState(null);
   const [erro, setErro] = useState("");
   const inputRef = useRef(null);
@@ -15,13 +15,13 @@ export default function UploadImagem() {
     if (!["image/png", "image/jpeg"].includes(file.type)) {
       setErro("Apenas imagens PNG ou JPEG são permitidas.");
       setFoto(null);
+      onFileSelect?.(null)
       return;
     }
 
-    if (foto) URL.revokeObjectURL(foto);
-
     setErro("");
     setFoto(URL.createObjectURL(file));
+    onFileSelect?.(file);
 
     speakText("Você selecionou uma imagem");
   };
@@ -30,6 +30,7 @@ export default function UploadImagem() {
     if (foto) {
       URL.revokeObjectURL(foto);
       setFoto(null);
+      onFileSelect?.(null);
 
       speakText("Você apagou a imagem");
     }
