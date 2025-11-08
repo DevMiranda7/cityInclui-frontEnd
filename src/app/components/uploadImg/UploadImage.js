@@ -1,21 +1,42 @@
+"use client";
 import React, { useState, useRef } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, AlertCircle } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
-export default function UploadImagem({onFileSelect}) {
+
+const MAX_FILE_SIZE_MB = 10;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+
+export default function UploadImagem({ onFileSelect }) {
   const [foto, setFoto] = useState(null);
   const [erro, setErro] = useState("");
   const inputRef = useRef(null);
-
+  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      setErro("Apenas imagens PNG ou JPEG são permitidas.");
+ 
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      const mensagemErro = "Apenas imagens PNG, JPEG ou WebP são permitidas.";
+      setErro(mensagemErro);
       setFoto(null);
-      onFileSelect?.(null)
+      onFileSelect?.(null);
+      
+    
+      speakText(`Erro: ${mensagemErro}`);
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      const mensagemErro = `A imagem é muito grande. O limite é ${MAX_FILE_SIZE_MB}MB.`;
+      setErro(mensagemErro);
+      setFoto(null);
+      onFileSelect?.(null);
+      
+      speakText(`Erro: ${mensagemErro}`);
       return;
     }
 
@@ -45,11 +66,11 @@ export default function UploadImagem({onFileSelect}) {
       <label
         htmlFor="fotoRestaurante"
         className={styles.label}
-        onClick={() => speakText("Envie uma imagem")}
-        onMouseEnter={() => speakText("Envie uma imagem")}
-        onFocus={() => handleFocusWithKeyboard("Envie uma imagem")}
+        onClick={() => speakText(`Envie uma foto. Limite: ${MAX_FILE_SIZE_MB}MB`)}
+        onMouseEnter={() => speakText(`Envie uma foto. Limite: ${MAX_FILE_SIZE_MB}MB`)}
+        onFocus={() => handleFocusWithKeyboard(`Envie uma foto. Limite: ${MAX_FILE_SIZE_MB}MB`)}
       >
-        Foto do Restaurante
+        Foto do Restaurante (Máx: {MAX_FILE_SIZE_MB}MB)
       </label>
 
       <div className={styles.uploadBox}>
@@ -57,7 +78,7 @@ export default function UploadImagem({onFileSelect}) {
           id="fotoRestaurante"
           ref={inputRef}
           type="file"
-          accept="image/png, image/jpeg"
+          accept={ACCEPTED_TYPES.join(",")}
           onChange={handleChange}
           className={styles.inputField}
           onFocus={() => handleFocusWithKeyboard("Envie uma imagem")}
@@ -70,7 +91,12 @@ export default function UploadImagem({onFileSelect}) {
         </div>
       </div>
 
-      {erro && <p className={styles.errorMessage}>{erro}</p>}
+      {erro && (
+        <p className={styles.errorMessage} role="alert">
+          <AlertCircle size={16} style={{ marginRight: "8px" }} />
+          {erro}
+        </p>
+      )}
 
       {foto && (
         <div className={styles.previewContainer}>

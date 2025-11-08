@@ -1,9 +1,10 @@
 "use client";
 
 import styles from "./UserAlternator.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
 export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
+  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   const getClassNames = (tipo) => {
     let classes = styles.botaoBase;
     classes +=
@@ -35,9 +36,7 @@ export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
         onFocus={() =>
           handleFocusWithKeyboard("Anunciante. Tenho um estabelecimento.")
         }
-        onMouseEnter={() =>
-          speakText("Anunciante. Tenho um estabelecimento.")
-        }
+        onMouseEnter={() => speakText("Anunciante. Tenho um estabelecimento.")}
         className={getClassNames("anunciante")}
         aria-label="Anunciante"
       >

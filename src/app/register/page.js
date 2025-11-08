@@ -16,7 +16,6 @@ export default function RegisterPage() {
   const [foto, setFoto] = useState(null);
   const [modal, setModal] = useState({ open: false, type: "", message: "" });
 
-  // funções do modal
   const abrirModal = (type, message) => {
     setModal({ open: true, type, message });
     speakText(message);
@@ -151,8 +150,6 @@ export default function RegisterPage() {
           </form>
         </div>
       </main>
-
-      {/* MODAL */}
       <ModalMensagem
         isOpen={modal.open}
         onClose={fecharModal}

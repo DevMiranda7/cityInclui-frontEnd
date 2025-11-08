@@ -2,9 +2,15 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ModalMensagem.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
-export default function ModalMensagem({ isOpen, onClose, type = "erro", message }) {
+export default function ModalMensagem({
+  isOpen,
+  onClose,
+  type = "erro",
+  message,
+}) {
+  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   if (!isOpen) return null;
 
   const titulo = type === "erro" ? "Erro" : "Sucesso";
@@ -30,7 +36,9 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
           >
             <h3
               id="modal-titulo"
-              onMouseEnter={() => speakText(`Mensagem de ${titulo.toLowerCase()}`)}
+              onMouseEnter={() =>
+                speakText(`Mensagem de ${titulo.toLowerCase()}`)
+              }
               onFocus={() =>
                 handleFocusWithKeyboard(`Mensagem de ${titulo.toLowerCase()}`)
               }
@@ -55,7 +63,9 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
                 speakText("Botão fechar modal. Pressione Enter para fechar.")
               }
               onFocus={() =>
-                handleFocusWithKeyboard("Botão fechar modal. Pressione Enter para fechar.")
+                handleFocusWithKeyboard(
+                  "Botão fechar modal. Pressione Enter para fechar."
+                )
               }
               autoFocus
               aria-label="Fechar mensagem"

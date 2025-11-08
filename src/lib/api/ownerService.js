@@ -1,10 +1,10 @@
 export async function createOwner(ownerData, foto = []) {
   try {
     const formData = new FormData();
-  formData.append(
-    "owner",
-    new Blob([JSON.stringify(ownerData)], { type: "application/json" })
-  );
+    formData.append(
+      "owner",
+      new Blob([JSON.stringify(ownerData)], { type: "application/json" })
+    );
 
     foto.forEach((file) => formData.append("photos", file));
 
@@ -28,6 +28,43 @@ export async function createOwner(ownerData, foto = []) {
     return data;
   } catch (err) {
     console.error("Erro ao enviar anunciante:", err);
+    throw err;
+  }
+}
+
+export async function getRestaurantes() {
+  try {
+    const response = await fetch("/api/proxy/restaurantes", {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Falha ao buscar restaurantes");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Erro ao tentar exibir os restaurantes", err);
+    throw err;
+  }
+}
+
+export async function getRestauranteById(ownerId) {
+  try {
+    const response = await fetch(`/api/proxy/restaurante/${ownerId}`, {
+      method: "GET",
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Falha ao buscar restaurante");
+    }
+
+    
+        return await response.json(); 
+
+  } catch (err) {
+    console.error("Erro ao tentar exibir o restaurante", err);
     throw err;
   }
 }
