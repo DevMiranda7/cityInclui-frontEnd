@@ -2,14 +2,21 @@ import { NextResponse } from "next/server";
 
 const SPRING_URL = process.env.SPRING_API_URL;
 
-export async function POST(request) {
-  try {
-    const formData = await request.formData();
+export async function GET(_request, { params }) {
+  const ownerId = params?.ownerId;
 
-    const response = await fetch(`${SPRING_URL}/cityinclui/cadastrar-anunciante`, {
-      method: "POST",
-      body: formData,
-      headers: {},
+  if (!ownerId) {
+    return NextResponse.json(
+      { message: "ID do proprietário não encontrado na rota." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const response = await fetch(`${SPRING_URL}/cityinclui/restaurante/${ownerId}`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      next: { revalidate: 300 },
     });
 
     const contentType = response.headers.get("content-type") || "application/json";
@@ -20,7 +27,7 @@ export async function POST(request) {
       headers: { "content-type": contentType },
     });
   } catch (err) {
-    console.error("Erro no Proxy (POST /cadastrar-anunciante):", err);
+    console.error(`Erro no Proxy (GET /restaurante/${ownerId}):`, err);
     return NextResponse.json(
       { message: "Erro interno do servidor Next.js", detail: err.message },
       { status: 500 }

@@ -1,0 +1,278 @@
+/* ======================================= */
+/* ARQUIVO: CarouselRestaurant.module.css  */
+/* (Baseado no seu design antigo)          */
+/* ======================================= */
+
+.restaurantsSection {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.rotatingRestaurant {
+  position: relative;
+  height: 500px; /* Altura fixa do design antigo */
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.restaurantSlide {
+  /*
+   * Este é o truque do carrossel do seu JS novo:
+   * 'display: none' por padrão, e 'display: flex' quando 'active'.
+   * O 'position: absolute' do seu CSS antigo não é usado.
+  */
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+
+  /* Layout do design antigo */
+  width: 100%;
+  height: 100%;
+  background: white;
+}
+
+.restaurantSlide.active {
+  display: flex; /* <-- É isso que faz o slide aparecer */
+  opacity: 1;
+}
+
+.restaurantImage {
+  width: 50%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.restaurantInfo {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Garante que o conteúdo não estoure */
+  overflow-y: auto; 
+}
+
+.restaurantName {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.restaurantCategory {
+  color: #7f8c8d;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stars {
+  color: #ffde59;
+}
+
+.ratingValue {
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.accessibilityTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tag {
+  background: #e8f4f8;
+  color: #3a7bd5;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.restaurantDescription {
+  color: #5d6d7e;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.restaurantControls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.controlDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #bdc3c7;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.controlDot.active {
+  background: #3a7bd5;
+  transform: scale(1.2);
+}
+
+.controlDot:hover {
+  background: #3498db;
+}
+
+/* Setas de navegação */
+.slideArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slideArrow:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.prevArrow {
+  left: 20px;
+}
+
+/* Ícone de Seta (CSS Puro) */
+.prevArrow::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-left: 3px solid #3a7bd5;
+  border-bottom: 3px solid #3a7bd5;
+  transform: rotate(45deg);
+  margin-right: 3px;
+}
+
+.nextArrow {
+  right: 20px;
+}
+
+/* Ícone de Seta (CSS Puro) */
+.nextArrow::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-right: 3px solid #3a7bd5;
+  border-top: 3px solid #3a7bd5;
+  transform: rotate(45deg);
+  margin-left: 3px;
+}
+
+/* Botão */
+.btn {
+  display: inline-block;
+  background: #ffde59;
+  color: #2c3e50;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start; /* Alinha o botão à esquerda */
+  margin-top: 15px; /* Adicionado do JS antigo */
+}
+
+.btn:hover {
+  background: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mensagens de status (do JS novo) */
+.loadingMessage,
+.errorMessage,
+.emptyMessage {
+  font-size: 1.2rem;
+  color: #5d6d7e;
+  text-align: center;
+  padding: 40px;
+}
+
+/* Responsividade (do CSS antigo) */
+@media (max-width: 768px) {
+  .rotatingRestaurant {
+    height: auto; /* Altura automática no mobile */
+  }
+
+  .restaurantSlide {
+    flex-direction: column; /* Pilha no mobile */
+    height: auto;
+  }
+
+  .restaurantImage {
+    width: 100%;
+    height: 300px;
+  }
+
+  .restaurantInfo {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .slideArrow {
+    width: 40px;
+    height: 40px;
+  }
+  .prevArrow { left: 10px; }
+  .nextArrow { right: 10px; }
+
+  .prevArrow::before,
+  .nextArrow::before {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurantsSection {
+    padding: 40px 15px;
+  }
+  .sectionTitle {
+    font-size: 1.7rem;
+  }
+  .restaurantName {
+    font-size: 1.5rem;
+  }
+}

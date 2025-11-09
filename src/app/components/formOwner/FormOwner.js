@@ -2,12 +2,13 @@
 import { useState } from "react";
 import styles from "./FormOwner.module.css";
 import UploadImagem from "../uploadImg/UploadImage";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 import Cardapio from "../cardapio/Cardapio";
+import Acessibilidades from "../accessibility/Acessibilidades";
 
 export default function FormOwner({ formData, setFormData, setFoto }) {
   const [telefone, setTelefone] = useState("");
-
+ const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   const handleTelefoneChange = (e) => {
     const onlyNums = e.target.value.replace(/\D/g, "");
     setTelefone(onlyNums);
@@ -128,6 +129,66 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
       </div>
 
       <Cardapio formData={formData} setFormData={setFormData} />
+
+          <div className={styles.inputGroup}>
+        <div className={styles.labelContainer}>
+          <label
+            htmlFor="descricao"
+            className={styles.label}
+            onClick={() =>
+              speakText(
+                "Descrição do Restaurante. Descreva seu restaurante. Mínimo 100 caracteres."
+              )
+            }
+            onMouseEnter={() =>
+              speakText(
+                "Descrição do Restaurante. Descreva seu restaurante. Mínimo 100 caracteres."
+              )
+            }
+            onFocus={() =>
+              handleFocusWithKeyboard(
+                "Descrição do Restaurante. Descreva seu restaurante e os recursos de acessibilidade. Mínimo 100 caracteres."
+              )
+            }
+          >
+            Descrição do Restaurante (100-500 caracteres)
+          </label>
+          <button
+            type="button"
+            className={styles.speakButton}
+            onClick={() =>
+              speakText(
+                "Descrição do Restaurante. Descreva seu restaurante e os recursos de acessibilidade. Mínimo 100 caracteres."
+              )
+            }
+            aria-label="Ouvir descrição do campo Descrição do Restaurante"
+          >
+            🗣️
+          </button>
+        </div>
+        <textarea
+          id="descricao"
+          placeholder="Descreva seu restaurante, focando nos detalhes de acessibilidade (mínimo 100 caracteres)"
+          className={styles.inputField} 
+          rows="5"
+          minLength="100" 
+          maxLength="500" 
+          value={formData.descricao || ""}
+          onChange={handleChange}
+          onFocus={() =>
+            handleFocusWithKeyboard(
+              "Descrição do Restaurante. Descreva seu restaurante. Mínimo 100 caracteres."
+            )
+          }
+          onMouseEnter={() =>
+            speakText(
+              "Descrição do Restaurante. Descreva seu restaurante. Mínimo 100 caracteres."
+            )
+          }
+        />
+      </div>
+
+      <Acessibilidades formData={formData} setFormData={setFormData} />
 
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>

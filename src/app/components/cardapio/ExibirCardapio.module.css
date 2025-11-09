@@ -1,0 +1,42 @@
+.culinariaContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.tagCulinaria {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  cursor: default;
+
+  transition: background-color 0.2s, transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.tagCulinaria:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tagCulinaria:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+  background-color: #d0d0d0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.naoInformado {
+  font-style: italic;
+  color: #777;
+}
+
+.naoInformado:focus {
+  outline: 2px solid #0056b3;
+  outline-offset: 2px;
+}
