@@ -1,0 +1,193 @@
+/* TelaLogin.module.css - Layout Instagram com Imagem */
+
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+  padding: 20px;
+  gap: 60px;
+}
+
+.loginLeft {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 380px;
+}
+
+.phoneImage {
+  width: 100%;
+  max-width: 380px;
+}
+
+.loginRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 350px;
+}
+
+.loginCard {
+  background: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 1px;
+  width: 100%;
+  max-width: 350px;
+  padding: 40px 40px 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.headerStripe {
+  display: none;
+}
+
+.logo {
+  display: block;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.logo span {
+  color: #667eea;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup {
+  margin-bottom: 6px;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.inputGroup input::placeholder {
+  color: #a0a0a0;
+}
+
+.loginButton {
+  width: 100%;
+  background: linear-gradient(90deg, #667eea, #6d48e8);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.loginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.forgotPassword {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.forgotLink {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgotLink:hover {
+  color: #588fdb;
+  text-decoration: underline;
+}
+
+.registerCard {
+  background: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 1px;
+  width: 100%;
+  max-width: 350px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.registerLink {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.registerLink a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.registerLink a:hover {
+  color: #588fdb;
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .loginContainer {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .loginLeft {
+    justify-content: center;
+    max-width: 300px;
+  }
+  
+  .phoneImage {
+    max-width: 300px;
+  }
+  
+  .loginRight {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginContainer {
+    background: white;
+    padding: 20px 10px;
+  }
+  
+  .loginCard, .registerCard {
+    border: none;
+    max-width: 100%;
+  }
+  
+  .logo {
+    font-size: 2rem;
+  }
+}
