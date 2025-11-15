@@ -3,6 +3,8 @@ import styles from "./restaurantePerfil.module.css";
 import { useSpeechSettings } from "../../context/SpeechContext";
 import ExibirCardapio from "../cardapio/ExibirCardapio";
 import ExibirAcessibilidades from "../accessibility/ExibirAcessibilidades";
+import StarRating from "../elements/StarRating";
+import FormAvaliacao from "../formAvaliacao/FormAvaliacao";
 
 export default function PerfilRestaurante({ restaurante }) {
   const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
@@ -15,9 +17,15 @@ export default function PerfilRestaurante({ restaurante }) {
   const listaAcessibilidades =
     restaurante.acessibilidadeDTOS?.map((a) => a.acessibilidade) || [];
 
+  const handleSubmitAvaliacao = (dados) => {
+    console.log("Avaliação enviada:", dados);
+    /** Aqui você faz:
+     * fetch("/api/avaliacoes", { method: "POST", body: JSON.stringify(dados) })
+     */
+  };
+
   return (
     <div className={styles.container}>
-
       <div className={styles.photos}>
         {restaurante.photo?.length > 0 ? (
           restaurante.photo.map((photo, i) => (
@@ -41,7 +49,6 @@ export default function PerfilRestaurante({ restaurante }) {
         )}
       </div>
 
-    
       <div className={styles.infoRestaurante}>
         <h1
           tabIndex={0}
@@ -50,6 +57,7 @@ export default function PerfilRestaurante({ restaurante }) {
         >
           {restaurante.nomeDoRestaurante}
         </h1>
+
         <p
           tabIndex={0}
           onMouseEnter={() =>
@@ -61,8 +69,27 @@ export default function PerfilRestaurante({ restaurante }) {
             )
           }
         >
-              Anunciante: {restaurante.nomeDoAnunciante}
+          Anunciante: {restaurante.nomeDoAnunciante}
         </p>
+
+        <div
+          className={styles.mediaBox}
+          tabIndex={0}
+          onMouseEnter={() =>
+            speakText(`Avaliação média ${restaurante.mediaAvaliacao} estrelas`)
+          }
+          onFocus={() =>
+            handleFocusWithKeyboard(
+              `Avaliação média ${restaurante.mediaAvaliacao} estrelas`
+            )
+          }
+        >
+          <StarRating value={Number(restaurante.mediaAvaliacao)} size={22} />
+          <span className={styles.mediaText}>
+            {Number(restaurante.mediaAvaliacao).toFixed(1)} / 5
+          </span>
+        </div>
+
         <p
           tabIndex={0}
           onMouseEnter={() => speakText(`Descrição: ${restaurante.descricao}`)}
@@ -72,6 +99,7 @@ export default function PerfilRestaurante({ restaurante }) {
         >
           {restaurante.descricao}
         </p>
+
         <p
           tabIndex={0}
           onMouseEnter={() => speakText(`Telefone: ${restaurante.telefone}`)}
@@ -81,6 +109,7 @@ export default function PerfilRestaurante({ restaurante }) {
         >
           Telefone: {restaurante.telefone}
         </p>
+
         <p
           tabIndex={0}
           onMouseEnter={() => speakText(`Email: ${restaurante.email}`)}
@@ -98,6 +127,12 @@ export default function PerfilRestaurante({ restaurante }) {
       <div className={styles.acessibilidadeWrapper}>
         <h2>Acessibilidades</h2>
         <ExibirAcessibilidades acessibilidades={listaAcessibilidades} />
+      </div>
+
+      {/* ⬇⬇ FORMULÁRIO DE AVALIAÇÃO AQUI ⬇⬇ */}
+      <div className={styles.avaliacaoWrapper}>
+        <h2>Deixar Avaliação</h2>
+        <FormAvaliacao onSubmit={handleSubmitAvaliacao} />
       </div>
     </div>
   );

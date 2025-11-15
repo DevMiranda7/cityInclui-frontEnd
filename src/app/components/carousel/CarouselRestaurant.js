@@ -5,6 +5,7 @@ import LoadingScreen from "../../components/loading/LoadingScreen";
 import { getRestaurantes } from "@/src/lib/api/ownerService";
 import { useSpeechSettings } from "../../context/SpeechContext";
 import Link from "next/link";
+import StarRating from "../../components/elements/StarRating";
 const RestaurantCarousel = ({ autoRotate = true }) => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
     const fetchRestaurants = async () => {
       try {
         const data = await getRestaurantes();
+        console.log("RESTAURANTES", data);
         setRestaurants(data);
       } catch (err) {
         setError("Não foi possível carregar os restaurantes no momento.");
@@ -52,7 +54,7 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
       `;
       speakText(texto);
     }
-  }, [currentSlide, restaurants]);
+  }, [currentSlide, restaurants, speakText]);
 
   const changeSlide = (index) => {
     if (restaurants.length === 0) return;
@@ -65,7 +67,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
   if (loading) {
     return <LoadingScreen text="Carregando informações..." />;
   }
-
 
   if (error) {
     return (
@@ -186,24 +187,32 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 tabIndex={0}
                 className={styles.rating}
                 onMouseEnter={() =>
-                  speakText(`Avaliação ${restaurant.rating || "5.0"} estrelas`)
+                  speakText(
+                    `Avaliação ${
+                      restaurant.mediaAvaliacao?.toFixed(1) || "não avaliado"
+                    } estrelas`
+                  )
                 }
                 onFocus={() =>
                   handleFocusWithKeyboard(
-                    `Avaliação ${restaurant.rating || "5.0"} estrelas`
+                    `Avaliação ${
+                      restaurant.mediaAvaliacao?.toFixed(1) || "não avaliado"
+                    } estrelas`
                   )
                 }
               >
-                <div className={styles.stars}>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
-                  <span>⭐</span>
+                <div className={styles.ratingStarsWrapper}>
+                  <StarRating
+                    value={Number(restaurant.mediaAvaliacao) || 0}
+                    size={22}
+                  />
+
+                  <span className={styles.ratingValue}>
+                    {restaurant.mediaAvaliacao
+                      ? Number(restaurant.mediaAvaliacao).toFixed(1)
+                      : "N/A"}
+                  </span>
                 </div>
-                <span className={styles.ratingValue}>
-                  {restaurant.rating || "5.0"}
-                </span>
               </div>
 
               <div className={styles.accessibilityTags}>
@@ -241,7 +250,7 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 {restaurant.descricao || "Descrição não disponível."}
               </p>
               <Link
-                href={`/restaurante/${restaurant.id}`} 
+                href={`/restaurante/${restaurant.id}`}
                 className={styles.btn}
                 onMouseEnter={() =>
                   speakText(

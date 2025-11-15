@@ -1,6 +1,5 @@
-import Login from "../components/telaLogin/TelaLogin";
-
+import TelaLogin from "../components/telaLogin/TelaLogin";
 
 export default function LoginPage() {
-  return <Login />;
+  return <TelaLogin />;
 }
