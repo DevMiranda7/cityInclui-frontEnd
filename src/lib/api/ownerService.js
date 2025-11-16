@@ -60,11 +60,27 @@ export async function getRestauranteById(ownerId) {
       throw new Error(errorData.error || "Falha ao buscar restaurante");
     }
 
-    
-        return await response.json(); 
-
+    return await response.json();
   } catch (err) {
     console.error("Erro ao tentar exibir o restaurante", err);
     throw err;
   }
+}
+
+export async function searchRestaurants(query = "", page = 0, size = 9) {
+  const params = new URLSearchParams({ q: query, page, size });
+  const response = await fetch(
+    `/api/proxy/buscar-restaurantes?${params.toString()}`
+  );
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    throw new Error("Resposta do servidor não é JSON válido");
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || `Erro ${response.status}`);
+  }
+  return data;
 }

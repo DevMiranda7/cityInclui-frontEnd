@@ -1,7 +1,8 @@
 import styles from "./Cardapio.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
 export default function Cardapio({ formData, setFormData }) {
+  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   const opcoes = [
     "Japonês",
     "Italiano",

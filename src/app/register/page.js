@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import styles from "./register.module.css";
-
-import { speakText, handleFocusWithKeyboard } from "../utils/useSpeech";
+import { useSpeechSettings } from "../context/SpeechContext";
 import AlternadorUsuario from "../components/userAlternator/UserAlternator";
 import FormClient from "../components/formClient/FormClient";
 import FormOwner from "../components/formOwner/FormOwner";
@@ -15,7 +14,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({});
   const [foto, setFoto] = useState(null);
   const [modal, setModal] = useState({ open: false, type: "", message: "" });
-
+  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
   const abrirModal = (type, message) => {
     setModal({ open: true, type, message });
     speakText(message);

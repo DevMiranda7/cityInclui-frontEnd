@@ -1,0 +1,15 @@
+.starWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.starFilled {
+  color: #f3c200; 
+  fill: currentColor;
+}
+
+
+.starEmpty {
+  color: #cccccc;
+}

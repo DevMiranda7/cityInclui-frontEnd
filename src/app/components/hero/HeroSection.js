@@ -1,36 +1,29 @@
+// components/hero/HeroSection.jsx
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import styles from "./HeroSection.module.css";
-
+import SearchBar from "./SearchBar";
 import { useSpeechSettings } from "../../context/SpeechContext";
 
 const HeroSection = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  
-
   const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    speakText(`Buscando por: ${searchTerm || "todos os restaurantes"}`);
-    console.log("Buscando por:", searchTerm);
-  };
 
   return (
     <section className={styles.hero}>
-  
       <div className={styles.heroContent}>
         <h1
+          tabIndex={0}
           onMouseEnter={() => speakText("Encontre restaurantes acessíveis")}
           onFocus={() =>
             handleFocusWithKeyboard("Encontre restaurantes acessíveis")
           }
-          tabIndex={0} 
         >
           Encontre restaurantes acessíveis
         </h1>
+
         <p
+          tabIndex={0}
           onMouseEnter={() =>
             speakText(
               "Descubra estabelecimentos com boa avaliação de acessibilidade para pessoas com deficiência visual"
@@ -41,34 +34,11 @@ const HeroSection = () => {
               "Descubra estabelecimentos com boa avaliação de acessibilidade para pessoas com deficiência visual"
             )
           }
-          tabIndex={0}
         >
-          Descubra estabelecimentos com boa avaliação de acessibilidade para
-          pessoas com deficiência visual
+          Descubra estabelecimentos com boa avaliação de acessibilidade
         </p>
 
-        <form className={styles.searchBar} onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Digite o nome do restaurante..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-            aria-label="Campo de busca de restaurante"
-            onMouseEnter={() => speakText("Digite o nome do restaurante")}
-            onFocus={() =>
-              handleFocusWithKeyboard("Digite o nome do restaurante")
-            }
-          />
-          <button
-            type="submit"
-            className={styles.searchButton}
-            onMouseEnter={() => speakText("Botão Buscar")}
-            onFocus={() => handleFocusWithKeyboard("Botão Buscar")}
-          >
-            Buscar
-          </button>
-        </form>
+        <SearchBar />
       </div>
     </section>
   );

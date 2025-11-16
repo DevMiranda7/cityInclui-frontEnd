@@ -4,13 +4,14 @@ const SPRING_URL = process.env.SPRING_API_URL;
 
 export async function GET() {
   try {
-    const response = await fetch(`${SPRING_URL}/cityinclui/restaurantes`, {
+    const response = await fetch(`${SPRING_URL}/cityinclui/restaurantes/top5`, {
       method: "GET",
       headers: { Accept: "application/json" },
       next: { revalidate: 300 }, // Cache de 5min
     });
 
-    const contentType = response.headers.get("content-type") || "application/json";
+    const contentType =
+      response.headers.get("content-type") || "application/json";
     const responseBody = await response.text();
 
     return new NextResponse(responseBody, {

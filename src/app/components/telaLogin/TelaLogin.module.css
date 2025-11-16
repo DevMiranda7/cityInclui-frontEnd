@@ -1,14 +1,12 @@
-/* TelaLogin.module.css - Layout Instagram com Imagem */
-
-
+/* CONTAINER PRINCIPAL */
 .loginContainer {
-  min-height: 100vh;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  background-color: #fafafa;
-  padding: 20px;
-  gap: 60px;
+  align-items: center;
+  min-height: 100vh;
+  gap: 20%;
+  padding: 40px 20px;
 }
 
 .loginLeft {
@@ -24,6 +22,7 @@
   max-width: 380px;
 }
 
+/* LADO DIREITO */
 .loginRight {
   flex: 1;
   display: flex;
@@ -32,21 +31,19 @@
   max-width: 350px;
 }
 
+/* CARD */
 .loginCard {
   background: white;
   border: 1px solid #dbdbdb;
   border-radius: 1px;
   width: 100%;
   max-width: 350px;
-  padding: 40px 40px 20px;
+  padding: 40px 40px 30px;
   text-align: center;
   margin-bottom: 10px;
 }
 
-.headerStripe {
-  display: none;
-}
-
+/* LOGO */
 .logo {
   display: block;
   text-align: center;
@@ -61,14 +58,55 @@
   color: #667eea;
 }
 
+/* TOGGLE CLIENTE / OWNER */
+.userTypeSelector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.userTypeOption {
+  position: relative;
+}
+
+.userTypeOption input {
+  display: none;
+}
+
+.userTypeOption label {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid #d5d5d5;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* HOVER */
+.userTypeOption label:hover {
+  border-color: #b9b9ff;
+  background: #f4f4ff;
+}
+
+/* SELECIONADO */
+.userTypeOption input:checked + label {
+  background: linear-gradient(90deg, #667eea, #6d48e8);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+  transform: translateY(-1px);
+}
+
+/* FORMULÁRIO */
 .loginForm {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.inputGroup {
-  margin-bottom: 6px;
+  gap: 10px;
 }
 
 .inputGroup input {
@@ -79,17 +117,12 @@
   font-size: 1rem;
   background: white;
   color: #333;
-  box-sizing: border-box;
 }
 
 .inputGroup input:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.inputGroup input::placeholder {
-  color: #a0a0a0;
 }
 
 .loginButton {
@@ -102,7 +135,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  margin: 8px 0;
+  margin-top: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -112,82 +145,47 @@
 }
 
 .forgotPassword {
-  text-align: center;
-  margin: 15px 0;
+  margin-top: 15px;
 }
 
 .forgotLink {
   color: #667eea;
-  text-decoration: none;
   font-size: 0.9rem;
-}
-
-.forgotLink:hover {
-  color: #588fdb;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .registerCard {
   background: white;
   border: 1px solid #dbdbdb;
-  border-radius: 1px;
   width: 100%;
   max-width: 350px;
   padding: 20px;
   text-align: center;
-  margin-bottom: 10px;
 }
 
 .registerLink {
   color: #666;
-  font-size: 0.9rem;
-  margin: 0;
 }
 
 .registerLink a {
   color: #667eea;
-  text-decoration: none;
   font-weight: 600;
+  text-decoration: none;
 }
 
-.registerLink a:hover {
-  color: #588fdb;
-  text-decoration: underline;
-}
-
-/* Responsividade */
+/* RESPONSIVO */
 @media (max-width: 768px) {
   .loginContainer {
     flex-direction: column;
     gap: 30px;
   }
-  
+
   .loginLeft {
     justify-content: center;
     max-width: 300px;
   }
-  
+
   .phoneImage {
     max-width: 300px;
-  }
-  
-  .loginRight {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .loginContainer {
-    background: white;
-    padding: 20px 10px;
-  }
-  
-  .loginCard, .registerCard {
-    border: none;
-    max-width: 100%;
-  }
-  
-  .logo {
-    font-size: 2rem;
   }
 }

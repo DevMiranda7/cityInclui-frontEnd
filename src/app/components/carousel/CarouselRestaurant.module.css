@@ -1,8 +1,3 @@
-/* ======================================= */
-/* ARQUIVO: CarouselRestaurant.module.css  */
-/* (Baseado no seu design antigo)          */
-/* ======================================= */
-
 .restaurantsSection {
   padding: 60px 20px;
   max-width: 1200px;
@@ -21,30 +16,24 @@
 
 .rotatingRestaurant {
   position: relative;
-  height: 500px; /* Altura fixa do design antigo */
+  height: 500px;
   overflow: hidden;
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .restaurantSlide {
-  /*
-   * Este é o truque do carrossel do seu JS novo:
-   * 'display: none' por padrão, e 'display: flex' quando 'active'.
-   * O 'position: absolute' do seu CSS antigo não é usado.
-  */
   display: none;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 
-  /* Layout do design antigo */
   width: 100%;
   height: 100%;
   background: white;
 }
 
 .restaurantSlide.active {
-  display: flex; /* <-- É isso que faz o slide aparecer */
+  display: flex; 
   opacity: 1;
 }
 
@@ -60,7 +49,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* Garante que o conteúdo não estoure */
   overflow-y: auto; 
 }
 
@@ -139,7 +127,6 @@
   background: #3498db;
 }
 
-/* Setas de navegação */
 .slideArrow {
   position: absolute;
   top: 50%;
@@ -168,7 +155,6 @@
   left: 20px;
 }
 
-/* Ícone de Seta (CSS Puro) */
 .prevArrow::before {
   content: "";
   width: 12px;
@@ -183,7 +169,6 @@
   right: 20px;
 }
 
-/* Ícone de Seta (CSS Puro) */
 .nextArrow::before {
   content: "";
   width: 12px;
@@ -194,7 +179,6 @@
   margin-left: 3px;
 }
 
-/* Botão */
 .btn {
   display: inline-block;
   background: #ffde59;
@@ -206,8 +190,8 @@
   transition: all 0.3s;
   border: none;
   cursor: pointer;
-  align-self: flex-start; /* Alinha o botão à esquerda */
-  margin-top: 15px; /* Adicionado do JS antigo */
+  align-self: flex-start; 
+  margin-top: 15px;
 }
 
 .btn:hover {
@@ -216,7 +200,6 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Mensagens de status (do JS novo) */
 .loadingMessage,
 .errorMessage,
 .emptyMessage {
@@ -226,14 +209,13 @@
   padding: 40px;
 }
 
-/* Responsividade (do CSS antigo) */
 @media (max-width: 768px) {
   .rotatingRestaurant {
-    height: auto; /* Altura automática no mobile */
+    height: auto; 
   }
 
   .restaurantSlide {
-    flex-direction: column; /* Pilha no mobile */
+    flex-direction: column; 
     height: auto;
   }
 
