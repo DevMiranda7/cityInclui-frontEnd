@@ -124,11 +124,7 @@ export default function TelaLogin() {
             </button>
           </form>
 
-          <div className={styles.forgotPassword}>
-            <Link href="/forgot-password" className={styles.forgotLink}>
-              Esqueceu a senha?
-            </Link>
-          </div>
+         
         </div>
 
         <div className={styles.registerCard}>
