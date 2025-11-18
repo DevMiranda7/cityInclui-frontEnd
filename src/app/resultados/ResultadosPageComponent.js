@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { searchRestaurants } from "@/src/lib/api/ownerService";
-import { useSpeechSettings } from "../context/SpeechContext"; 
+import { useSpeechSettings } from "../context/SpeechContext";
 
 import styles from "./ResultadosPage.module.css";
 import RestaurantCard from "../components/restaurantCard/RestaurantCard";
@@ -17,31 +17,30 @@ const ResultadosPageComponent = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [page, setPage] = useState(0); 
+  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const pageSize = 9;
 
   useEffect(() => {
     const fetchResults = async () => {
       if (!query) {
-         setLoading(false);
-         setResults([]);
-         return;
+        setLoading(false);
+        setResults([]);
+        return;
       }
-      
+
       try {
         setLoading(true);
         setError("");
-        
+
         const data = await searchRestaurants(query, page, pageSize);
         const finalResults = data.content || [];
 
-        setResults(finalResults); 
-        
+        setResults(finalResults);
+
         setTotalPages(Math.ceil(data.totalElements / pageSize));
 
         speakText(`Resultados da busca: ${query}, página ${page + 1}`);
-        
       } catch (err) {
         setError("Erro ao buscar restaurantes.");
         console.error(err);
@@ -51,14 +50,14 @@ const ResultadosPageComponent = () => {
     };
 
     fetchResults();
-  }, [query, page]); 
+  }, [query, page]);
 
   if (loading) return <p className={styles.statusText}>Carregando...</p>;
   if (error) return <p className={styles.statusText}>{error}</p>;
   if (!results.length && query)
     return <p className={styles.statusText}>Nenhum restaurante encontrado.</p>;
   if (!results.length && !query)
-     return <p className={styles.statusText}>Digite algo para buscar.</p>;
+    return <p className={styles.statusText}>Nenhum restaurante encontrado.</p>;
 
   return (
     <section className={styles.pageContainer}>
@@ -80,7 +79,9 @@ const ResultadosPageComponent = () => {
       {totalPages > 1 && (
         <div className={styles.paginationContainer}>
           <button
-            className={`${styles.pageButton} ${page <= 0 ? styles.disabled : ""}`}
+            className={`${styles.pageButton} ${
+              page <= 0 ? styles.disabled : ""
+            }`}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page <= 0}
             onMouseEnter={() => speakText("Página anterior")}
@@ -90,11 +91,12 @@ const ResultadosPageComponent = () => {
           </button>
 
           {(() => {
-            const pagesToShow = Array.from({ length: totalPages }, (_, i) => i)
-              .filter(
-                (i) =>
-                  Math.abs(i - page) <= 2 || i === 0 || i === totalPages - 1
-              );
+            const pagesToShow = Array.from(
+              { length: totalPages },
+              (_, i) => i
+            ).filter(
+              (i) => Math.abs(i - page) <= 2 || i === 0 || i === totalPages - 1
+            );
 
             const paginationItems = [];
             let lastPage = -1;

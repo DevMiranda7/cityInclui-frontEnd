@@ -1,20 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./HeroSection.module.css";
 import ResultsModal from "./ResultsModal";
 import { searchRestaurants } from "@/src/lib/api/ownerService";
 import { useSpeechSettings } from "../../context/SpeechContext";
 import { useRouter } from "next/navigation";
+import FilterMenu from "./filter";
 
 const SearchBar = () => {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const { speakText } = useSpeechSettings();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // ---------------------
+  // FILTROS (agora só 1)
+  // ---------------------
+  const [showFilter, setShowFilter] = useState(false);
+  const filterRef = useRef(null);
   const router = useRouter();
 
+  // Lista única e centralizada
+  const foodTypes = [
+    { value: "japones", label: "Japonês" },
+    { value: "italiano", label: "Italiano" },
+    { value: "caseiro", label: "Caseiro" },
+    { value: "vegano", label: "Vegano" },
+    { value: "fastfood", label: "Fast Food" },
+    { value: "brasileiro", label: "Brasileiro" },
+    { value: "pizzaria", label: "Pizzaria" },
+  ];
 
+  // Seleção do filtro → redirecionamento imediato
+  const handleSelectFilter = (label) => {
+    setShowFilter(false);
+
+    speakText(`Filtrando por ${label}`);
+
+    router.push(`/resultados?q=${encodeURIComponent(label)}`);
+  };
+
+  // Busca por texto
   const handleInputChange = async (e) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
@@ -25,7 +52,6 @@ const SearchBar = () => {
         setSuggestions(data);
         setIsDropdownOpen(true);
       } catch (err) {
-        console.error("Erro ao buscar sugestões:", err);
         setSuggestions([]);
         setIsDropdownOpen(false);
       }
@@ -35,6 +61,7 @@ const SearchBar = () => {
     }
   };
 
+  // Submeter busca pelo texto
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -48,34 +75,41 @@ const SearchBar = () => {
   return (
     <div className={styles.searchContainer}>
       <form className={styles.searchBar} onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Digite o nome do restaurante..."
-          value={query}
-          onChange={handleInputChange}
-          className={styles.searchInput}
-          aria-label="Campo de busca de restaurante"
-          onMouseEnter={() => speakText("Digite o nome do restaurante")}
-          onFocus={() =>
-            handleFocusWithKeyboard("Digite o nome do restaurante")
-          }
-        />
+        <div className={styles.searchInputContainer} ref={filterRef}>
+          <input
+            type="text"
+            placeholder="Digite o nome do restaurante..."
+            value={query}
+            onChange={handleInputChange}
+            className={styles.searchInput}
+          />
 
-        <button
-          type="submit"
-          className={styles.searchButton}
-          onMouseEnter={() => speakText("Botão Buscar")}
-          onFocus={() => handleFocusWithKeyboard("Botão Buscar")}
-        >
+          {/* BOTÃO DO MENU */}
+          <button
+            type="button"
+            className={styles.filterButton}
+            onClick={() => setShowFilter(!showFilter)}
+          >
+            🍔
+          </button>
+
+          <FilterMenu
+            showFilter={showFilter}
+            foodTypes={foodTypes}
+            onSelect={handleSelectFilter}
+            onClose={() => setShowFilter(false)}
+          />
+        </div>
+
+        <button type="submit" className={styles.searchButton}>
           Buscar
         </button>
       </form>
+
       <ResultsModal
         isOpen={isDropdownOpen}
         results={suggestions}
-        speakText={speakText}
-        handleFocusWithKeyboard={handleFocusWithKeyboard}
-        onClose={() => setIsDropdownOpen(false)} 
+        onClose={() => setIsDropdownOpen(false)}
       />
     </div>
   );
