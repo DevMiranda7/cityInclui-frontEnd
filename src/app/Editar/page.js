@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import EditarRestaurante from "../components/editarrestaurante/EditarRestaurante";
+import EditarRestaurante from "../components/editarRestaurante/EditarRestaurante";
 
 export default function EditarPage() {
   const [dadosRestaurante, setDadosRestaurante] = useState(null);
