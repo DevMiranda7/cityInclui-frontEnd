@@ -2,18 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-
-import styles from "./RestaurantCard.module.css"; 
+import styles from "./RestaurantCard.module.css";
 import { useSpeechSettings } from "../../context/SpeechContext";
-import StarRating from "../elements/StarRating"; 
-
-const HeartIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-  >
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-  </svg>
-);
+import StarRating from "../elements/StarRating";
 
 const getAccessibilityText = (restaurant) => {
   if (
@@ -29,9 +20,11 @@ const getAccessibilityText = (restaurant) => {
 };
 
 export default function RestaurantCard({ restaurant }) {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  // Atualizado: usamos safeSpeak em vez de speakText
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
   const accessibilitySpeakText = getAccessibilityText(restaurant);
+  
   const linkDescription = `Restaurante ${
     restaurant.nomeDoRestaurante || "Nome não informado"
   }. ${
@@ -42,37 +35,27 @@ export default function RestaurantCard({ restaurant }) {
     restaurant.photo?.[0]?.urlFoto ||
     "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400";
 
-  const handleFavoriteClick = (e) => {
-    e.preventDefault(); 
-    e.stopPropagation(); 
-    alert("Restaurante favoritado!");
-  };
-
   return (
     <li className={styles.resultCard}>
       <Link
         href={`/restaurante/${restaurant.id}`}
         className={styles.resultLink}
         aria-label={linkDescription}
-        onMouseEnter={() => speakText(linkDescription)}
+        // Atualizado para usar safeSpeak
+        onMouseEnter={() => safeSpeak(linkDescription)}
+        // Mantido handleFocusWithKeyboard que já existia no contexto novo
         onFocus={() => handleFocusWithKeyboard(linkDescription)}
       >
         <div className={styles.cardImageContainer}>
-    
-          <button
-            className={styles.heartButton}
-            onClick={handleFavoriteClick}
-            aria-label="Favoritar restaurante"
-          >
-            <HeartIcon />
-          </button>
-          <span className={styles.cardTag}>Preferido</span>
           <img
             src={imageUrl}
             alt={`Imagem do restaurante ${restaurant.nomeDoRestaurante}`}
             className={styles.cardImage}
+            // Opcional: Feedback de voz na imagem se desejar
+            // onMouseEnter={() => safeSpeak(`Foto de ${restaurant.nomeDoRestaurante}`)}
           />
         </div>
+
         <div className={styles.cardInfo}>
           <div className={styles.restaurantName}>
             {restaurant.nomeDoRestaurante || "Nome não informado"}

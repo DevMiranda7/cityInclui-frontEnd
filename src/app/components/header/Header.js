@@ -1,163 +1,187 @@
 "use client";
+
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import { useSpeechSettings } from "../../context/SpeechContext";
-import { Volume2, VolumeX, MoreVertical, User, LogOut } from "lucide-react";
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
+// IMPORTANTE: Importar o hook do contexto de voz
+import { useSpeechSettings } from "../../context/SpeechContext"; 
+import {
+  Volume2,
+  VolumeX,
+  MoreVertical,
+  User,
+  LogOut,
+  Store,
+} from "lucide-react";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const [usuario, setUsuario] = useState(null);
-  const [carregando, setCarregando] = useState(true);
+  const { userType, userId, loadingUser, logout } = useAuth();
+  const router = useRouter();
+
+  // Consumir o contexto global em vez de criar estado local
+  const { speechEnabled, toggleSpeech, safeSpeak } = useSpeechSettings();
+
   const [dropdownAberto, setDropdownAberto] = useState(false);
-
-  const { speechEnabled, toggleSpeech, speakText, handleFocusWithKeyboard } =
-    useSpeechSettings();
-
   const dropdownRef = useRef(null);
 
-  // Buscar usuário logado
-  useEffect(() => {
-    const buscarUsuario = async () => {
-      try {
-        const resposta = await fetch("/api/auth/usuario", {
-          credentials: "include",
-        });
+  const handleNavigateToRestaurant = () => {
+    if (userId) {
+      router.push(`/restaurante/${userId}`);
+    }
+  };
 
-        if (resposta.ok) {
-          const dadosUsuario = await resposta.json();
-          setUsuario(dadosUsuario);
-        }
-      } catch (error) {
-        console.error("Erro ao buscar usuário:", error);
-      } finally {
-        setCarregando(false);
-      }
-    };
-
-    buscarUsuario();
-  }, []);
-
-  // Fechar dropdown ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownAberto(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleToggle = () => {
-    const willEnable = !speechEnabled;
+  /* 🔊 Botão para ativar/desativar voz */
+  const handleToggleSpeech = () => {
+    // Apenas chama a função do contexto que inverte o valor global
     toggleSpeech();
-
-    setTimeout(() => {
-      const mensagem = willEnable
-        ? "Leitura de voz ativada"
-        : "Leitura de voz desativada";
-
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(mensagem);
-        utterance.lang = "pt-BR";
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-      }
-    }, 200);
+    
+    // Opcional: Feedback auditivo imediato (apenas se estiver ativando)
+    if (!speechEnabled) {
+       // Como o estado updates assincronamente, forçamos o speak aqui se desejado,
+       // ou deixamos o usuário perceber pela mudança de ícone.
+       // Devido ao "safeSpeak" bloquear quando false, o feedback de "Desativado" é mudo (o que é correto em a11y).
+       setTimeout(() => safeSpeak("Leitura por voz ativada."), 100);
+    }
   };
 
-  const toggleDropdown = () => {
-    setDropdownAberto(!dropdownAberto);
-  };
+  const toggleDropdown = () => setDropdownAberto(!dropdownAberto);
 
   const handleLogout = () => {
-    // Implementar logout aqui
-    console.log("Fazer logout");
     setDropdownAberto(false);
+    logout();
+    router.push("/login");
+  };
+
+  const getDisplayName = () => {
+    if (userType === "CLIENT") return "Cliente";
+    if (userType === "OWNER") return "Parceiro";
+    return "Usuário";
   };
 
   return (
     <header className={styles.headerContainer}>
       <nav className={styles.contentWrapper}>
-        <Link
-          href="/"
-          className={styles.logo}
-          onMouseEnter={() => speakText("Página inicial City Inclui")}
-          onFocus={() => handleFocusWithKeyboard("Página inicial City Inclui")}
-        >
-          <img
-            src="https://i.ibb.co/p6nzSB6p/imagem-2025-10-29-224844608.png"
-            alt="CityInclui Logo"
-            className={styles.logoImage}
-          />
-          City<span>Inclui</span>
-        </Link>
+        {/* LEFT / LOGO */}
+        <div className={styles.leftSection}>
+          <div
+            className={styles.logo}
+            tabIndex={0}
+            onMouseEnter={() => safeSpeak("City Inclui. Ir para página inicial.")}
+            onFocus={() => safeSpeak("City Inclui. Ir para página inicial.")}
+          >
+            <img
+              src="https://i.ibb.co/p6nzSB6p/imagem-2025-10-29-224844608.png"
+              alt="CityInclui Logo"
+              className={styles.logoImage}
+            />
+            City<span>Inclui</span>
+          </div>
 
-        <h1 className={styles.mainTitle}>City Inclui</h1>
+          <Link
+            href="/"
+            className={styles.navLink}
+            tabIndex={0}
+            onMouseEnter={() => safeSpeak("Página inicial.")}
+            onFocus={() => safeSpeak("Página inicial.")}
+          >
+            HOME
+          </Link>
+        </div>
 
-        {/* Link HOME fixo */}
-        <ul className={styles.navLinks}>
-          <li>
-            <Link
-              href="/"
-              className={styles.navLink}
-              onMouseEnter={() => speakText("HOME")}
-              onFocus={() => handleFocusWithKeyboard("HOME")}
+        {/* CENTER */}
+        <div className={styles.centerSection}>
+          {userType === "OWNER" && userId && (
+            <button
+              onClick={handleNavigateToRestaurant}
+              className={styles.iconButton}
+              title="Ir para Meu Restaurante"
+              tabIndex={0}
+              onMouseEnter={() => safeSpeak("Ir para meu restaurante.")}
+              onFocus={() => safeSpeak("Ir para meu restaurante.")}
             >
-              HOME
-            </Link>
-          </li>
-        </ul>
+              <Store size={24} />
+            </button>
+          )}
+        </div>
 
-        {/* Área do usuário */}
+        {/* RIGHT */}
         <div className={styles.userArea}>
-          {carregando ? (
-            <div className={styles.loadingUser}>Carregando...</div>
-          ) : usuario ? (
+          {/* TOGGLE DE VOZ */}
+          <button
+            onClick={handleToggleSpeech}
+            className={styles.speechToggle}
+            aria-label={speechEnabled ? "Desativar voz" : "Ativar voz"}
+            tabIndex={0}
+            onMouseEnter={() =>
+              safeSpeak(
+                speechEnabled
+                  ? "Desativar leitura por voz."
+                  : "Ativar leitura por voz."
+              )
+            }
+            onFocus={() =>
+              safeSpeak(
+                speechEnabled
+                  ? "Desativar leitura por voz."
+                  : "Ativar leitura por voz."
+              )
+            }
+          >
+            {speechEnabled ? <Volume2 /> : <VolumeX />}
+          </button>
+
+          {/* USER AREA */}
+          {loadingUser ? (
+            <div className={styles.loadingUser}>...</div>
+          ) : userType ? (
             <div className={styles.userContainer} ref={dropdownRef}>
               <div
                 className={styles.userInfo}
-                onMouseEnter={() => speakText(`Olá ${usuario.nome}`)}
-                onFocus={() => handleFocusWithKeyboard(`Olá ${usuario.nome}`)}
+                tabIndex={0}
+                onMouseEnter={() =>
+                  safeSpeak(`Olá ${getDisplayName()}. Abra o menu de usuário.`)
+                }
+                onFocus={() =>
+                  safeSpeak(`Olá ${getDisplayName()}. Abra o menu de usuário.`)
+                }
               >
                 <span className={styles.userWelcome}>Olá, </span>
-                <span className={styles.userName}>{usuario.nome}</span>
+                <span className={styles.userName}>{getDisplayName()}</span>
               </div>
 
-              {/* Botão dos três pontinhos */}
               <button
                 className={styles.dropdownToggle}
                 onClick={toggleDropdown}
                 aria-label="Menu do usuário"
-                onMouseEnter={() => speakText("Opções do usuário")}
-                onFocus={() => handleFocusWithKeyboard("Opções do usuário")}
+                tabIndex={0}
+                onMouseEnter={() => safeSpeak("Abrir menu do usuário.")}
+                onFocus={() => safeSpeak("Abrir menu do usuário.")}
               >
                 <MoreVertical size={20} />
               </button>
 
-              {/* Dropdown Menu */}
               {dropdownAberto && (
                 <div className={styles.dropdownMenu}>
                   <Link
-                    href="/editar-perfil"
+                    href="/editar"
                     className={styles.dropdownItem}
                     onClick={() => setDropdownAberto(false)}
-                    onMouseEnter={() => speakText("Editar perfil")}
-                    onFocus={() => handleFocusWithKeyboard("Editar perfil")}
+                    tabIndex={0}
+                    onMouseEnter={() => safeSpeak("Editar perfil.")}
+                    onFocus={() => safeSpeak("Editar perfil.")}
                   >
                     <User size={16} />
                     <span>Editar Perfil</span>
                   </Link>
+
                   <button
                     className={styles.dropdownItem}
                     onClick={handleLogout}
-                    onMouseEnter={() => speakText("Sair da conta")}
-                    onFocus={() => handleFocusWithKeyboard("Sair da conta")}
+                    tabIndex={0}
+                    onMouseEnter={() => safeSpeak("Sair da conta.")}
+                    onFocus={() => safeSpeak("Sair da conta.")}
                   >
                     <LogOut size={16} />
                     <span>Sair</span>
@@ -171,18 +195,21 @@ export default function Header() {
                 <Link
                   href="/login"
                   className={styles.navLink}
-                  onMouseEnter={() => speakText("LOGIN")}
-                  onFocus={() => handleFocusWithKeyboard("LOGIN")}
+                  tabIndex={0}
+                  onMouseEnter={() => safeSpeak("Fazer login.")}
+                  onFocus={() => safeSpeak("Fazer login.")}
                 >
                   LOGIN
                 </Link>
               </li>
+
               <li>
                 <Link
                   href="/register"
                   className={styles.navLink}
-                  onMouseEnter={() => speakText("REGISTRO")}
-                  onFocus={() => handleFocusWithKeyboard("REGISTRO")}
+                  tabIndex={0}
+                  onMouseEnter={() => safeSpeak("Criar uma conta.")}
+                  onFocus={() => safeSpeak("Criar uma conta.")}
                 >
                   REGISTRO
                 </Link>
@@ -190,24 +217,6 @@ export default function Header() {
             </ul>
           )}
         </div>
-
-        <button
-          onClick={handleToggle}
-          className={styles.speechToggle}
-          aria-label={
-            speechEnabled ? "Desativar leitura de voz" : "Ativar leitura de voz"
-          }
-          onMouseEnter={() =>
-            speakText(speechEnabled ? "Desativar leitura" : "Ativar leitura")
-          }
-          onFocus={() =>
-            handleFocusWithKeyboard(
-              speechEnabled ? "Desativar leitura" : "Ativar leitura"
-            )
-          }
-        >
-          {speechEnabled ? <Volume2 /> : <VolumeX />}
-        </button>
       </nav>
     </header>
   );

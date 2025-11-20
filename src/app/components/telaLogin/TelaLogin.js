@@ -1,27 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./TelaLogin.module.css";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { login } from '../../../lib/api/authService';
-import ModalMensagem from "../../components/modal/ModalMensagem"; // ajuste o path conforme necessário
+import { useRouter } from "next/navigation";
+import { login } from "../../../lib/api/authService";
+import ModalMensagem from "../../components/modal/ModalMensagem";
+import { useAuth } from "../../context/AuthContext"; // Contexto global
+import { useSpeechSettings } from "../../context/SpeechContext"; // ⬅️ Contexto de Voz
 
 export default function TelaLogin() {
   const [userType, setUserType] = useState("CLIENT");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // Modal
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const { loginSuccess } = useAuth();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  // Função auxiliar para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // Cleanup: Para a voz se o componente desmontar
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    stopSpeech(); // Para qualquer leitura anterior
     setLoading(true);
 
     if (!email || !password) {
@@ -32,22 +48,18 @@ export default function TelaLogin() {
     }
 
     try {
+      safeSpeak("Tentando realizar login...");
       const data = await login(email, password, userType);
 
-      Cookies.set('token', data.token, {
-        expires: 1,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      });
-
-      if (userType === "CLIENT") {
-        router.push('/');
+      if (data && data.token) {
+        loginSuccess(data.token);
+        safeSpeak("Login realizado com sucesso. Redirecionando.");
+        router.push("/");
       } else {
-        router.push('/dashboard-owner');
+        throw new Error("Token não recebido do servidor.");
       }
-
     } catch (err) {
-      // Mostra o erro no modal
+      console.error("Erro no login:", err);
       setModalMessage(err.message || "Erro ao fazer login.");
       setModalOpen(true);
     } finally {
@@ -63,39 +75,82 @@ export default function TelaLogin() {
           src="https://i.ibb.co/p6nzSB6p/imagem-2025-10-29-224844608.png"
           alt="CityInclui App"
           className={styles.phoneImage}
+          onMouseEnter={() =>
+            safeSpeak("Imagem ilustrativa do aplicativo City Inclui no celular")
+          }
+          onMouseLeave={stopSpeech}
         />
       </div>
 
       {/* LADO DIREITO */}
       <div className={styles.loginRight}>
         <div className={styles.loginCard}>
-          <Link href="/" className={styles.logo}>
+          <Link
+            href="/"
+            className={styles.logo}
+            onMouseEnter={() =>
+              safeSpeak("Logo City Inclui. Voltar para página inicial")
+            }
+            onMouseLeave={stopSpeech}
+            onFocus={() =>
+              handleFocusWithKeyboard("Logo City Inclui. Voltar para página inicial")
+            }
+          >
             City<span>Inclui</span>
           </Link>
 
-          <div className={styles.userTypeSelector}>
+          {/* Tipo de usuário */}
+          <div
+            className={styles.userTypeSelector}
+            role="radiogroup"
+            aria-label="Selecione o tipo de usuário"
+          >
+            {/* Opção Cliente */}
             <div className={styles.userTypeOption}>
               <input
                 type="radio"
                 id="cliente"
                 name="tipo"
                 checked={userType === "CLIENT"}
-                onChange={() => setUserType("CLIENT")}
+                onChange={() => {
+                  setUserType("CLIENT");
+                  safeSpeak("Selecionado: Cliente");
+                }}
+                onFocus={() => handleFocusWithKeyboard("Opção Cliente")}
               />
-              <label htmlFor="cliente">Cliente</label>
+              <label
+                htmlFor="cliente"
+                onMouseEnter={() => safeSpeak("Opção: Entrar como Cliente")}
+                onMouseLeave={stopSpeech}
+              >
+                Cliente
+              </label>
             </div>
+
+            {/* Opção Restaurante */}
             <div className={styles.userTypeOption}>
               <input
                 type="radio"
                 id="owner"
                 name="tipo"
                 checked={userType === "OWNER"}
-                onChange={() => setUserType("OWNER")}
+                onChange={() => {
+                  setUserType("OWNER");
+                  safeSpeak("Selecionado: Restaurante");
+                }}
+                onFocus={() => handleFocusWithKeyboard("Opção Restaurante")}
               />
-              <label htmlFor="owner">Restaurante</label>
+              <label
+                htmlFor="owner"
+                onMouseEnter={() => safeSpeak("Opção: Entrar como Restaurante")}
+                onMouseLeave={stopSpeech}
+              >
+                Restaurante
+              </label>
             </div>
           </div>
 
+          {/* Formulário */}
           <form className={styles.loginForm} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
               <input
@@ -104,6 +159,11 @@ export default function TelaLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                // Lógica completa de acessibilidade
+                onMouseEnter={() => safeSpeak("Campo de email. Clique para digitar.")}
+                onMouseLeave={stopSpeech}
+                onClick={() => safeSpeak("Pode digitar seu email agora.")}
+                onFocus={() => handleFocusWithKeyboard("Campo de email. Digite seu email.")}
               />
             </div>
             <div className={styles.inputGroup}>
@@ -113,28 +173,44 @@ export default function TelaLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                // Lógica completa de acessibilidade
+                onMouseEnter={() => safeSpeak("Campo de senha. Clique para digitar.")}
+                onMouseLeave={stopSpeech}
+                onClick={() => safeSpeak("Pode digitar sua senha.")}
+                onFocus={() => handleFocusWithKeyboard("Campo de senha. Digite sua senha.")}
               />
             </div>
             <button
               type="submit"
               className={styles.loginButton}
               disabled={loading}
+              onMouseEnter={() =>
+                safeSpeak(loading ? "Aguarde, entrando..." : "Botão Entrar")
+              }
+              onMouseLeave={stopSpeech}
+              onFocus={() => handleFocusWithKeyboard("Botão Entrar")}
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? "Entrando..." : "Entrar"}
             </button>
           </form>
-
-         
         </div>
 
         <div className={styles.registerCard}>
           <p className={styles.registerLink}>
-            Não tem uma conta? <Link href="/register">Criar agora</Link>
+            Não tem uma conta?{" "}
+            <Link
+              href="/register"
+              onMouseEnter={() => safeSpeak("Link para criar nova conta")}
+              onMouseLeave={stopSpeech}
+              onFocus={() => handleFocusWithKeyboard("Link para criar nova conta")}
+            >
+              Criar agora
+            </Link>
           </p>
         </div>
       </div>
 
-      {/* Modal de erro/sucesso */}
+      {/* Modal de erro */}
       <ModalMensagem
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

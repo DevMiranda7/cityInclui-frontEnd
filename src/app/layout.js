@@ -1,17 +1,25 @@
+import "./globals.css";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import { SpeechProvider } from "./context/SpeechContext";
-import "./globals.css";
+import { AuthProvider } from "./context/AuthContext"; 
+
+export const metadata = {
+  title: "CityInclui",
+  description: "Plataforma acessível para todos",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        <SpeechProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </SpeechProvider>
+        <AuthProvider> {/* ✅ Aqui */}
+          <SpeechProvider>
+            <Header />
+            {children}
+            <Footer />
+          </SpeechProvider>
+        </AuthProvider>
       </body>
     </html>
   );

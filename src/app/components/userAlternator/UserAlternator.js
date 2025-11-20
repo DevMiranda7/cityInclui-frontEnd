@@ -1,10 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
 import styles from "./UserAlternator.module.css";
 import { useSpeechSettings } from "../../context/SpeechContext";
 
 export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  // Função auxiliar para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // Cleanup: Para a voz se o componente desmontar
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
   const getClassNames = (tipo) => {
     let classes = styles.botaoBase;
     classes +=
@@ -15,30 +29,45 @@ export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
   };
 
   return (
-    <div className={styles.alternadorContainer}>
+    <div className={styles.alternadorContainer} role="group" aria-label="Selecione o tipo de perfil">
+      
+      {/* BOTÃO CLIENTE */}
       <button
-        onClick={() => setTipoUsuario("cliente")}
+        onClick={() => {
+          setTipoUsuario("cliente");
+          safeSpeak("Selecionado: Cliente. Busco restaurantes acessíveis.");
+        }}
         onFocus={() =>
-          handleFocusWithKeyboard("Cliente. Busco restaurantes acessíveis.")
+          handleFocusWithKeyboard("Opção Cliente. Busco restaurantes acessíveis.")
         }
         onMouseEnter={() =>
-          speakText("Cliente. Busco restaurantes acessíveis.")
+          safeSpeak("Opção Cliente. Busco restaurantes acessíveis.")
         }
+        onMouseLeave={stopSpeech}
         className={getClassNames("cliente")}
         aria-label="Cliente"
+        aria-pressed={tipoUsuario === "cliente"}
       >
         <span className={styles.icone}>👤</span>
         <span className={styles.titulo}>Cliente</span>
       </button>
 
+      {/* BOTÃO ANUNCIANTE */}
       <button
-        onClick={() => setTipoUsuario("anunciante")}
+        onClick={() => {
+          setTipoUsuario("anunciante");
+          safeSpeak("Selecionado: Anunciante. Tenho um estabelecimento.");
+        }}
         onFocus={() =>
-          handleFocusWithKeyboard("Anunciante. Tenho um estabelecimento.")
+          handleFocusWithKeyboard("Opção Anunciante. Tenho um estabelecimento.")
         }
-        onMouseEnter={() => speakText("Anunciante. Tenho um estabelecimento.")}
+        onMouseEnter={() =>
+          safeSpeak("Opção Anunciante. Tenho um estabelecimento.")
+        }
+        onMouseLeave={stopSpeech}
         className={getClassNames("anunciante")}
         aria-label="Anunciante"
+        aria-pressed={tipoUsuario === "anunciante"}
       >
         <span className={styles.icone}>🏪</span>
         <span className={styles.titulo}>Anunciante</span>
