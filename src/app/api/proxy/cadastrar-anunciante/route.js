@@ -6,13 +6,17 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
 
-    const response = await fetch(`${SPRING_URL}/cityinclui/cadastrar-anunciante`, {
-      method: "POST",
-      body: formData,
-      headers: {},
-    });
+    const response = await fetch(
+      `${SPRING_URL}/cityinclui/cadastrar-anunciante`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {},
+      }
+    );
 
-    const contentType = response.headers.get("content-type") || "application/json";
+    const contentType =
+      response.headers.get("content-type") || "application/json";
     const responseBody = await response.text();
 
     return new NextResponse(responseBody, {

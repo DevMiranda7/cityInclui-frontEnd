@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import styles from "./Acessibilidades.module.css";
 import { useSpeechSettings } from "../../context/SpeechContext";
 
@@ -14,25 +15,37 @@ const opcoes = [
 ];
 
 export default function Acessibilidades({ formData, setFormData }) {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
   const descricaoCampo =
     "Acessibilidades. Selecione um ou mais itens que seu restaurante oferece.";
 
-  // CORREÇÃO: Garantir que sempre temos um array
+  // Função auxiliar para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // Cleanup: Para a voz se o componente desmontar
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
+  // GARANTIR QUE SEMPRE TEMOS UM ARRAY
   let listaAtual = formData.acessibilidades || [];
-  
+
   // Se for um objeto (estrutura antiga), converter para array
-  if (typeof listaAtual === 'object' && !Array.isArray(listaAtual)) {
-    // Converter objeto para array baseado nos valores true
-    listaAtual = Object.keys(listaAtual).filter(key => listaAtual[key] === true);
-    // Mapear para os nomes corretos das opções
-    listaAtual = listaAtual.map(key => {
+  if (typeof listaAtual === "object" && !Array.isArray(listaAtual)) {
+    listaAtual = Object.keys(listaAtual).filter(
+      (key) => listaAtual[key] === true
+    );
+    listaAtual = listaAtual.map((key) => {
       const mapeamento = {
         rampaAcesso: "Rampa de acesso",
-        banheiroAdaptado: "Banheiro adaptado", 
+        banheiroAdaptado: "Banheiro adaptado",
         cardapioBraile: "Cardápio em Braille",
         atendimentoLibras: "Funcionário fluente em LIBRAS",
-        estacionamentoAcessivel: "Vaga de estacionamento reservada"
+        estacionamentoAcessivel: "Vaga de estacionamento reservada",
       };
       return mapeamento[key] || key;
     });
@@ -44,10 +57,10 @@ export default function Acessibilidades({ formData, setFormData }) {
 
     if (jaSelecionado) {
       novaLista = listaAtual.filter((item) => item !== opcao);
-      speakText(`Você removeu: ${opcao}`);
+      safeSpeak(`Você removeu: ${opcao}`);
     } else {
       novaLista = [...listaAtual, opcao];
-      speakText(`Você selecionou: ${opcao}`);
+      safeSpeak(`Você selecionou: ${opcao}`);
     }
 
     setFormData({ ...formData, acessibilidades: novaLista });
@@ -58,8 +71,9 @@ export default function Acessibilidades({ formData, setFormData }) {
       <div className={styles.labelContainer}>
         <label
           className={styles.label}
-          onClick={() => speakText(descricaoCampo)}
-          onMouseEnter={() => speakText(descricaoCampo)}
+          onClick={() => safeSpeak(descricaoCampo)}
+          onMouseEnter={() => safeSpeak(descricaoCampo)}
+          onMouseLeave={stopSpeech}
           onFocus={() => handleFocusWithKeyboard(descricaoCampo)}
         >
           Acessibilidades (Selecione um ou mais)
@@ -68,7 +82,7 @@ export default function Acessibilidades({ formData, setFormData }) {
         <button
           type="button"
           className={styles.speakButton}
-          onClick={() => speakText(descricaoCampo)}
+          onClick={() => safeSpeak(descricaoCampo)}
           aria-label="Ouvir descrição do campo Acessibilidades"
         >
           🗣️
@@ -77,12 +91,13 @@ export default function Acessibilidades({ formData, setFormData }) {
 
       <div
         className={styles.lista}
-        onMouseEnter={() => speakText(descricaoCampo)}
-        onFocus={() => handleFocusWithKeyboard(descricaoCampo)}
-        tabIndex={0}
+        onMouseLeave={stopSpeech} // Para o áudio se sair da área da lista
+        role="group"
+        aria-label="Opções de acessibilidade"
       >
         {opcoes.map((tipo) => {
           const isSelected = listaAtual.includes(tipo);
+          const textoVoz = `${tipo}. ${isSelected ? "Selecionado" : ""}`;
 
           return (
             <button
@@ -92,7 +107,15 @@ export default function Acessibilidades({ formData, setFormData }) {
                 isSelected ? styles.selecionado : ""
               }`}
               onClick={() => handleSelect(tipo)}
-              onMouseEnter={() => speakText(tipo)}
+              
+              // Mouse
+              onMouseEnter={() => safeSpeak(textoVoz)}
+              onMouseLeave={stopSpeech}
+              
+              // Teclado
+              onFocus={() => handleFocusWithKeyboard(textoVoz)}
+              
+              // Acessibilidade nativa
               aria-pressed={isSelected}
             >
               {tipo}

@@ -1,18 +1,28 @@
 "use client";
-import styles from "./ExibirAcessibilidades.module.css"; // Crie um CSS para ele
+import styles from "./ExibirAcessibilidades.module.css"; 
 import { useSpeechSettings } from "../../context/SpeechContext";
 
 export default function ExibirAcessibilidades({ acessibilidades }) {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+ 
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
 
   if (!acessibilidades || acessibilidades.length === 0) {
+    const textoVazio = "Nenhuma acessibilidade informada";
     return (
       <p
         className={styles.naoInformado}
         tabIndex={0}
-        onFocus={() => handleFocusWithKeyboard("Nenhuma acessibilidade informada")}
+        onMouseEnter={() => safeSpeak(textoVazio)}
+        onMouseLeave={stopSpeech}
+        onFocus={() => handleFocusWithKeyboard(textoVazio)}
       >
-        Nenhuma acessibilidade informada
+        {textoVazio}
       </p>
     );
   }
@@ -24,7 +34,8 @@ export default function ExibirAcessibilidades({ acessibilidades }) {
           key={index}
           className={styles.itemAcessibilidade}
           tabIndex={0}
-          onMouseEnter={() => speakText(item)}
+          onMouseEnter={() => safeSpeak(item)}
+          onMouseLeave={stopSpeech}
           onFocus={() => handleFocusWithKeyboard(item)}
         >
           {item}

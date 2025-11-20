@@ -16,6 +16,7 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
+/* --- FOTOS --- */
 .photos {
   display: flex;
   flex-wrap: wrap;
@@ -39,6 +40,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* --- INFO DO RESTAURANTE --- */
 .infoRestaurante {
   margin-bottom: 3rem;
   text-align: center;
@@ -59,6 +61,7 @@
   color: #555e68;
 }
 
+/* --- WRAPPERS --- */
 .cardapioWrapper,
 .acessibilidadeWrapper {
   margin-bottom: 2.5rem;
@@ -75,6 +78,7 @@
   transform: translateY(-3px);
 }
 
+/* Títulos */
 .cardapioWrapper h2,
 .acessibilidadeWrapper h2 {
   font-size: 1.6rem;
@@ -85,6 +89,7 @@
   padding-left: 10px;
 }
 
+/* Elementos desativados */
 .cardapioWrapper .inputGroup,
 .acessibilidadeWrapper .inputGroup {
   pointer-events: none;
@@ -112,6 +117,7 @@
   background: linear-gradient(135deg, #dcefff 0%, #c6e0ff 100%);
 }
 
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
   .photos {
     flex-direction: column;
@@ -146,6 +152,7 @@
   }
 }
 
+/* Média de avaliações */
 .mediaBox {
   display: flex;
   align-items: center;
@@ -157,5 +164,22 @@
 .mediaText {
   font-size: 1rem;
   color: #555;
+  font-weight: 500;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #eee;
+  margin: 2rem 0;
+}
+
+.loginMessage {
+  margin-top: 20px;
+  color: #666;
+}
+
+.loginMessage a {
+  color: blue;
   font-weight: 500;
 }

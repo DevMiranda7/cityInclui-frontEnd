@@ -8,20 +8,31 @@ import Acessibilidades from "../accessibility/Acessibilidades";
 
 export default function EditarRestaurante({ initialData, onSave, onCancel }) {
   const [formData, setFormData] = useState({});
-  const [telefone, setTelefone] = useState("");
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const [novaFoto, setNovaFoto] = useState(null);
+  
+  // 1. Hooks do Contexto
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Atualiza o formData quando initialData mudar
+  // 2. Função para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // 3. Cleanup
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
-      setTelefone(initialData.telefone || "");
     }
   }, [initialData]);
 
   const handleTelefoneChange = (e) => {
     const onlyNums = e.target.value.replace(/\D/g, "");
-    setTelefone(onlyNums);
     setFormData((prev) => ({ ...prev, telefone: onlyNums }));
   };
 
@@ -30,48 +41,47 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
+  const handleFileSelect = (file) => {
+    setNovaFoto(file);
   };
 
-  const handleFileSelect = (file) => {
-    setFormData((prev) => ({ ...prev, foto: file }));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData, novaFoto);
   };
+
+  // --- VERIFICAR MUDANÇAS ---
+  const temAlteracoes = () => {
+    if (novaFoto) return true;
+    if (!initialData || !formData) return false;
+    return JSON.stringify(formData) !== JSON.stringify(initialData);
+  };
+
+  const podeSalvar = temAlteracoes();
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div
         role="group"
-        aria-label="Formulário de edição de informações do restaurante"
+        aria-label="Formulário de edição de restaurante"
+        style={{ display: "contents" }}
       >
-        {/* Primeira linha com grid */}
+        {/* --- LINHA 1: NOMES --- */}
         <div className={styles.gridRow}>
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label
-                htmlFor="nomeDoRestaurante"
+              <label 
+                htmlFor="nomeDoRestaurante" 
                 className={styles.label}
-                onClick={() =>
-                  speakText("Nome do restaurante. Edite o nome do seu restaurante")
-                }
-                onMouseEnter={() =>
-                  speakText("Nome do restaurante. Edite o nome do seu restaurante")
-                }
-                onFocus={() =>
-                  handleFocusWithKeyboard(
-                    "Nome do restaurante. Edite o nome do seu restaurante"
-                  )
-                }
+                onMouseEnter={() => safeSpeak("Rótulo Nome do Restaurante")}
+                onMouseLeave={stopSpeech}
               >
                 Nome do Restaurante
               </label>
               <button
                 type="button"
                 className={styles.speakButton}
-                onClick={() =>
-                  speakText("Nome do restaurante. Edite o nome do seu restaurante")
-                }
+                onClick={() => safeSpeak("Nome do restaurante. Edite se necessário.")}
                 aria-label="Ouvir descrição do campo Nome do Restaurante"
               >
                 🗣️
@@ -80,53 +90,33 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             <input
               id="nomeDoRestaurante"
               type="text"
-              placeholder="Nome do seu restaurante"
               className={styles.inputField}
               value={formData.nomeDoRestaurante || ""}
               onChange={handleChange}
-              onFocus={() =>
-                handleFocusWithKeyboard(
-                  "Nome do restaurante. Edite o nome do seu restaurante"
-                )
-              }
-              onMouseEnter={() =>
-                speakText("Nome do restaurante. Edite o nome do seu restaurante")
-              }
+              
+              // Acessibilidade
+              onMouseEnter={() => safeSpeak("Campo Nome do Restaurante. Clique para editar.")}
+              onMouseLeave={stopSpeech}
+              onClick={() => safeSpeak("Pode digitar o novo nome do restaurante.")}
+              onFocus={() => handleFocusWithKeyboard("Campo Nome do Restaurante")}
             />
           </div>
 
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label
-                htmlFor="nomeDoAnunciante"
+              <label 
+                htmlFor="nomeDoAnunciante" 
                 className={styles.label}
-                onClick={() =>
-                  speakText(
-                    "Seu nome. Edite o nome do responsável pelo restaurante"
-                  )
-                }
-                onMouseEnter={() =>
-                  speakText(
-                    "Seu nome. Edite o nome do responsável pelo restaurante"
-                  )
-                }
-                onFocus={() =>
-                  handleFocusWithKeyboard(
-                    "Seu nome. Edite o nome do responsável pelo restaurante"
-                  )
-                }
+                onMouseEnter={() => safeSpeak("Rótulo Seu Nome")}
+                onMouseLeave={stopSpeech}
               >
-                Seu Nome (Responsável)
+                Seu Nome
               </label>
               <button
                 type="button"
                 className={styles.speakButton}
-                onClick={() =>
-                  speakText(
-                    "Seu nome. Edite o nome do responsável pelo restaurante"
-                  )
-                }
-                aria-label="Ouvir descrição do campo Nome do Anunciante"
+                onClick={() => safeSpeak("Seu nome. Edite se necessário.")}
+                aria-label="Ouvir descrição do campo Seu Nome"
               >
                 🗣️
               </button>
@@ -134,155 +124,103 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             <input
               id="nomeDoAnunciante"
               type="text"
-              placeholder="Seu nome completo"
               className={styles.inputField}
               value={formData.nomeDoAnunciante || ""}
               onChange={handleChange}
-              onFocus={() =>
-                handleFocusWithKeyboard(
-                  "Seu nome. Edite o nome do responsável pelo restaurante"
-                )
-              }
-              onMouseEnter={() =>
-                speakText("Seu nome. Edite o nome do responsável pelo restaurante")
-              }
+              
+              // Acessibilidade
+              onMouseEnter={() => safeSpeak("Campo Seu Nome. Clique para editar.")}
+              onMouseLeave={stopSpeech}
+              onClick={() => safeSpeak("Pode digitar seu nome.")}
+              onFocus={() => handleFocusWithKeyboard("Campo Seu Nome")}
             />
           </div>
         </div>
 
+        {/* --- BLOCO 2: CARDÁPIO (Já tem voz interna) --- */}
         <Cardapio formData={formData} setFormData={setFormData} />
 
+        {/* --- BLOCO 3: DESCRIÇÃO --- */}
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
-            <label
-              htmlFor="descricao"
+            <label 
+              htmlFor="descricao" 
               className={styles.label}
-              onClick={() =>
-                speakText(
-                  "Descrição do Restaurante. Edite a descrição do seu restaurante. Mínimo 100 caracteres."
-                )
-              }
-              onMouseEnter={() =>
-                speakText(
-                  "Descrição do Restaurante. Edite a descrição do seu restaurante. Mínimo 100 caracteres."
-                )
-              }
-              onFocus={() =>
-                handleFocusWithKeyboard(
-                  "Descrição do Restaurante. Edite a descrição do seu restaurante e os recursos de acessibilidade. Mínimo 100 caracteres."
-                )
-              }
+              onMouseEnter={() => safeSpeak("Rótulo Descrição")}
+              onMouseLeave={stopSpeech}
             >
-              Descrição do Restaurante (100-500 caracteres)
+              Descrição (100-200 carac.)
             </label>
             <button
               type="button"
               className={styles.speakButton}
-              onClick={() =>
-                speakText(
-                  "Descrição do Restaurante. Edite a descrição do seu restaurante e os recursos de acessibilidade. Mínimo 100 caracteres."
-                )
-              }
-              aria-label="Ouvir descrição do campo Descrição do Restaurante"
+              onClick={() => safeSpeak("Descrição do restaurante. Mínimo 50 caracteres.")}
+              aria-label="Ouvir descrição do campo Descrição"
             >
               🗣️
             </button>
           </div>
           <textarea
             id="descricao"
-            placeholder="Descreva seu restaurante, focando nos detalhes de acessibilidade (mínimo 100 caracteres)"
             className={`${styles.inputField} ${styles.textareaField}`}
-            rows="5"
-            minLength="100" 
-            maxLength="500" 
+            rows="4"
+            minLength="50"
+            maxLength="200"
             value={formData.descricao || ""}
             onChange={handleChange}
-            onFocus={() =>
-              handleFocusWithKeyboard(
-                "Descrição do Restaurante. Edite a descrição do seu restaurante. Mínimo 100 caracteres."
-              )
-            }
-            onMouseEnter={() =>
-              speakText(
-                "Descrição do Restaurante. Edite a descrição do seu restaurante. Mínimo 100 caracteres."
-              )
-            }
+            
+            // Acessibilidade
+            onMouseEnter={() => safeSpeak("Campo de texto Descrição. Clique para editar.")}
+            onMouseLeave={stopSpeech}
+            onClick={() => safeSpeak("Pode digitar a descrição do restaurante.")}
+            onFocus={() => handleFocusWithKeyboard("Campo Descrição do restaurante")}
           />
         </div>
 
+        {/* --- BLOCO 4: ACESSIBILIDADES (Já tem voz interna) --- */}
         <Acessibilidades formData={formData} setFormData={setFormData} />
 
-        {/* Segunda linha com grid para campos de contato */}
+        {/* --- BLOCO 5: CONTATO (EMAIL E TELEFONE) --- */}
         <div className={styles.gridRow}>
-          {/* Campo NÃO editável - Email */}
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label
-                htmlFor="email"
+              <label 
                 className={styles.label}
-                onClick={() =>
-                  speakText("E-mail de contato. Campo não editável")
-                }
-                onMouseEnter={() =>
-                  speakText("E-mail de contato. Campo não editável")
-                }
-                onFocus={() =>
-                  handleFocusWithKeyboard(
-                    "E-mail de contato. Campo não editável"
-                  )
-                }
+                onMouseEnter={() => safeSpeak("Rótulo E-mail. Não editável.")}
+                onMouseLeave={stopSpeech}
               >
-                E-mail de Contato (Não editável)
+                E-mail
               </label>
-              <button
-                type="button"
-                className={styles.speakButton}
-                onClick={() =>
-                  speakText("E-mail de contato. Campo não editável")
-                }
-                aria-label="Ouvir descrição do campo E-mail de Contato"
-              >
-                🗣️
-              </button>
             </div>
             <input
-              id="email"
               type="email"
-              placeholder="contato@restaurante.com"
               className={`${styles.inputField} ${styles.nonEditable}`}
               value={formData.email || ""}
               readOnly
               disabled
-              onFocus={() =>
-                handleFocusWithKeyboard(
-                  "E-mail de contato. Campo não editável"
-                )
-              }
-              onMouseEnter={() =>
-                speakText("E-mail de contato. Campo não editável")
-              }
+              title="Este campo não pode ser editado"
+              
+              // Acessibilidade
+              onMouseEnter={() => safeSpeak("Este campo de e-mail não pode ser alterado.")}
+              onMouseLeave={stopSpeech}
+              onFocus={() => handleFocusWithKeyboard("Campo E-mail. Apenas leitura.")}
             />
           </div>
 
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label
-                htmlFor="telefone"
+              <label 
+                htmlFor="telefone" 
                 className={styles.label}
-                onClick={() => speakText("Telefone. Edite seu telefone com DDD")}
-                onMouseEnter={() =>
-                  speakText("Telefone. Edite seu telefone com DDD")
-                }
-                onFocus={() =>
-                  handleFocusWithKeyboard("Telefone. Edite seu telefone com DDD")
-                }
+                onMouseEnter={() => safeSpeak("Rótulo Telefone")}
+                onMouseLeave={stopSpeech}
               >
                 Telefone
               </label>
               <button
                 type="button"
                 className={styles.speakButton}
-                onClick={() => speakText("Telefone. Edite seu telefone com DDD")}
+                onClick={() => safeSpeak("Telefone. Edite seu número com DDD.")}
                 aria-label="Ouvir descrição do campo Telefone"
               >
                 🗣️
@@ -291,124 +229,58 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             <input
               id="telefone"
               type="tel"
-              placeholder="(00) 00000-0000"
-              value={telefone}
+              className={styles.inputField}
+              value={formData.telefone || ""}
               onChange={handleTelefoneChange}
-              className={styles.inputField}
-              maxLength={11}
-              onFocus={() =>
-                handleFocusWithKeyboard("Telefone. Edite seu telefone com DDD")
-              }
-              onMouseEnter={() =>
-                speakText("Telefone. Edite seu telefone com DDD")
-              }
+              maxLength={15}
+              placeholder="(00) 00000-0000"
+              
+              // Acessibilidade
+              onMouseEnter={() => safeSpeak("Campo Telefone. Clique para editar.")}
+              onMouseLeave={stopSpeech}
+              onClick={() => safeSpeak("Pode digitar o novo telefone.")}
+              onFocus={() => handleFocusWithKeyboard("Campo Telefone. Edite o número.")}
             />
           </div>
         </div>
 
-        {/* Terceira linha com grid para senhas */}
-        <div className={styles.gridRow}>
-          <div className={styles.inputGroup}>
-            <div className={styles.labelContainer}>
-              <label
-                htmlFor="novaSenha"
-                className={styles.label}
-                onClick={() => speakText("Nova senha. Deixe em branco para manter a atual")}
-                onMouseEnter={() => speakText("Nova senha. Deixe em branco para manter a atual")}
-                onFocus={() =>
-                  handleFocusWithKeyboard("Nova senha. Deixe em branco para manter a atual")
-                }
-              >
-                Nova Senha (Opcional)
-              </label>
-              <button
-                type="button"
-                className={styles.speakButton}
-                onClick={() => speakText("Nova senha. Deixe em branco para manter a atual")}
-                aria-label="Ouvir descrição do campo Nova Senha"
-              >
-                🗣️
-              </button>
-            </div>
-            <input
-              id="novaSenha"
-              type="password"
-              placeholder="Deixe em branco para manter a senha atual"
-              className={styles.inputField}
-              value={formData.novaSenha || ""}
-              onChange={handleChange}
-              onFocus={() => handleFocusWithKeyboard("Nova senha. Deixe em branco para manter a atual")}
-              onMouseEnter={() => speakText("Nova senha. Deixe em branco para manter a atual")}
-            />
-          </div>
+        {/* --- UPLOAD DE NOVA IMAGEM --- */}
+        <UploadImagem
+          onFileSelect={handleFileSelect}
+          initialImage={formData.urlFoto || formData.foto || null}
+          allowRemove={false}
+        />
 
-          <div className={styles.inputGroup}>
-            <div className={styles.labelContainer}>
-              <label
-                htmlFor="confirmarNovaSenha"
-                className={styles.label}
-                onClick={() =>
-                  speakText("Confirmar nova senha. Repita a nova senha")
-                }
-                onMouseEnter={() =>
-                  speakText("Confirmar nova senha. Repita a nova senha")
-                }
-                onFocus={() =>
-                  handleFocusWithKeyboard(
-                    "Confirmar nova senha. Repita a nova senha"
-                  )
-                }
-              >
-                Confirmar Nova Senha
-              </label>
-              <button
-                type="button"
-                className={styles.speakButton}
-                onClick={() =>
-                  speakText("Confirmar nova senha. Repita a nova senha")
-                }
-                aria-label="Ouvir descrição do campo Confirmar Nova Senha"
-              >
-                🗣️
-              </button>
-            </div>
-            <input
-              id="confirmarNovaSenha"
-              type="password"
-              placeholder="Repita a nova senha"
-              className={styles.inputField}
-              value={formData.confirmarNovaSenha || ""}
-              onChange={handleChange}
-              onFocus={() =>
-                handleFocusWithKeyboard(
-                  "Confirmar nova senha. Repita a nova senha"
-                )
-              }
-              onMouseEnter={() =>
-                speakText("Confirmar nova senha. Repita a nova senha")
-              }
-            />
-          </div>
-        </div>
-
-        <UploadImagem onFileSelect={handleFileSelect} initialImage={formData.foto} />
-
-        {/* Botões de ação */}
+        {/* --- BLOCO 7: AÇÕES --- */}
         <div className={styles.buttonGroup}>
           <button
             type="button"
             className={styles.cancelButton}
             onClick={onCancel}
-            onFocus={() => handleFocusWithKeyboard("Botão cancelar edição")}
-            onMouseEnter={() => speakText("Cancelar edição")}
+            
+            // Acessibilidade
+            onMouseEnter={() => safeSpeak("Botão Cancelar")}
+            onMouseLeave={stopSpeech}
+            onFocus={() => handleFocusWithKeyboard("Botão Cancelar")}
           >
             Cancelar
           </button>
-          <button
-            type="submit"
+          
+          {/* BOTÃO COM A LÓGICA DE DISABLED */}
+          <button 
+            type="submit" 
             className={styles.saveButton}
-            onFocus={() => handleFocusWithKeyboard("Botão salvar alterações")}
-            onMouseEnter={() => speakText("Salvar alterações")}
+            disabled={!podeSalvar}
+            title={!podeSalvar ? "Faça alguma alteração para salvar" : "Salvar alterações"}
+            
+            // Acessibilidade
+            onMouseEnter={() => 
+              safeSpeak(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado. Nenhuma alteração detectada.")
+            }
+            onMouseLeave={stopSpeech}
+            onFocus={() => 
+              handleFocusWithKeyboard(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado")
+            }
           >
             Salvar Alterações
           </button>

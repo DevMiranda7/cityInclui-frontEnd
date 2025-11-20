@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./HeroSection.module.css";
 import ResultsModal from "./ResultsModal";
 import { searchRestaurants } from "@/src/lib/api/ownerService";
@@ -9,19 +9,26 @@ import { useRouter } from "next/navigation";
 import FilterMenu from "./filter";
 
 const SearchBar = () => {
-  const { speakText } = useSpeechSettings();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // ---------------------
-  // FILTROS (agora só 1)
-  // ---------------------
   const [showFilter, setShowFilter] = useState(false);
-  const filterRef = useRef(null);
   const router = useRouter();
 
-  // Lista única e centralizada
+  // Função auxiliar para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // Cleanup: Para a voz se o componente desmontar
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
   const foodTypes = [
     { value: "japones", label: "Japonês" },
     { value: "italiano", label: "Italiano" },
@@ -32,16 +39,15 @@ const SearchBar = () => {
     { value: "pizzaria", label: "Pizzaria" },
   ];
 
-  // Seleção do filtro → redirecionamento imediato
-  const handleSelectFilter = (label) => {
+  function handleSelect(selectedFood) {
+    setQuery(selectedFood);
+    stopSpeech();
+    safeSpeak(`Filtro aplicado: ${selectedFood}. Buscando...`);
     setShowFilter(false);
+    // redirecionamento imediato conforme solicitado
+    router.push(`/resultados?q=${encodeURIComponent(selectedFood)}`);
+  }
 
-    speakText(`Filtrando por ${label}`);
-
-    router.push(`/resultados?q=${encodeURIComponent(label)}`);
-  };
-
-  // Busca por texto
   const handleInputChange = async (e) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
@@ -61,34 +67,49 @@ const SearchBar = () => {
     }
   };
 
-  // Submeter busca pelo texto
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    speakText(`Buscando por: ${query}`);
+    stopSpeech();
+    safeSpeak(`Buscando por ${query}`);
     setIsDropdownOpen(false);
-
     router.push(`/resultados?q=${encodeURIComponent(query)}`);
   };
 
   return (
     <div className={styles.searchContainer}>
       <form className={styles.searchBar} onSubmit={handleSubmit}>
-        <div className={styles.searchInputContainer} ref={filterRef}>
+        <div className={styles.searchInputContainer}>
           <input
             type="text"
             placeholder="Digite o nome do restaurante..."
             value={query}
             onChange={handleInputChange}
             className={styles.searchInput}
+            
+            // Lógica de Acessibilidade no Input
+            onMouseEnter={() => safeSpeak("Campo de busca. Clique para digitar.")}
+            onMouseLeave={stopSpeech}
+            onClick={() => safeSpeak("Pode digitar o nome do restaurante.")}
+            onFocus={() => handleFocusWithKeyboard("Campo de busca. Digite o nome do restaurante.")}
           />
 
-          {/* BOTÃO DO MENU */}
           <button
             type="button"
             className={styles.filterButton}
-            onClick={() => setShowFilter(!showFilter)}
+            onClick={() => {
+              stopSpeech();
+              safeSpeak(showFilter ? "Fechando filtros" : "Abrindo filtros");
+              setShowFilter(!showFilter);
+            }}
+            
+            // Lógica de Acessibilidade no Botão Filtro
+            onMouseEnter={() => safeSpeak("Botão de filtros. Clique para selecionar categorias.")}
+            onMouseLeave={stopSpeech}
+            onFocus={() => handleFocusWithKeyboard("Botão de filtros. Selecione uma categoria.")}
+            aria-label="Filtros de pesquisa"
+            aria-expanded={showFilter}
           >
             🍔
           </button>
@@ -96,12 +117,19 @@ const SearchBar = () => {
           <FilterMenu
             showFilter={showFilter}
             foodTypes={foodTypes}
-            onSelect={handleSelectFilter}
+            onSelect={handleSelect}
             onClose={() => setShowFilter(false)}
           />
         </div>
 
-        <button type="submit" className={styles.searchButton}>
+        <button
+          type="submit"
+          className={styles.searchButton}
+          // Lógica de Acessibilidade no Botão Buscar
+          onMouseEnter={() => safeSpeak("Botão Buscar. Pressione Enter para pesquisar.")}
+          onMouseLeave={stopSpeech}
+          onFocus={() => handleFocusWithKeyboard("Botão Buscar.")}
+        >
           Buscar
         </button>
       </form>

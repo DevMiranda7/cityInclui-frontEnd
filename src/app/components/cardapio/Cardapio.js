@@ -1,8 +1,11 @@
+"use client";
+import { useEffect } from "react";
 import styles from "./Cardapio.module.css";
 import { useSpeechSettings } from "../../context/SpeechContext";
 
 export default function Cardapio({ formData, setFormData }) {
-  const { speakText, handleFocusWithKeyboard } = useSpeechSettings();
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+  
   const opcoes = [
     "Japonês",
     "Italiano",
@@ -16,13 +19,26 @@ export default function Cardapio({ formData, setFormData }) {
 
   const descricaoCampo = "Tipo de cardápio. Selecione a culinária principal";
 
+  // Função auxiliar para parar o áudio imediatamente
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  // Cleanup: Para a voz se o componente desmontar
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
   return (
     <div className={styles.inputGroup}>
       <div className={styles.labelContainer}>
         <label
           className={styles.label}
-          onClick={() => speakText(descricaoCampo)}
-          onMouseEnter={() => speakText(descricaoCampo)}
+          onClick={() => safeSpeak(descricaoCampo)}
+          onMouseEnter={() => safeSpeak(descricaoCampo)}
+          onMouseLeave={stopSpeech}
           onFocus={() => handleFocusWithKeyboard(descricaoCampo)}
         >
           Tipo de Cardápio (Culinária)
@@ -31,7 +47,7 @@ export default function Cardapio({ formData, setFormData }) {
         <button
           type="button"
           className={styles.speakButton}
-          onClick={() => speakText(descricaoCampo)}
+          onClick={() => safeSpeak(descricaoCampo)}
           aria-label="Ouvir descrição do campo Tipo de Cardápio"
         >
           🗣️
@@ -40,26 +56,40 @@ export default function Cardapio({ formData, setFormData }) {
 
       <div
         className={styles.lista}
-        onMouseEnter={() => speakText(descricaoCampo)}
-        onFocus={() => handleFocusWithKeyboard(descricaoCampo)}
-        tabIndex={0}
+        role="group"
+        aria-label="Opções de culinária"
+        onMouseLeave={stopSpeech} // Para áudio se sair da área da lista
       >
-        {opcoes.map((tipo) => (
-          <button
-            key={tipo}
-            type="button"
-            className={`${styles.opcao} ${
-              formData.cardapio === tipo ? styles.selecionado : ""
-            }`}
-            onClick={() => {
-              setFormData({ ...formData, cardapio: tipo });
-              speakText(`Você selecionou: ${tipo}`);
-            }}
-            onMouseEnter={() => speakText(tipo)}
-          >
-            {tipo}
-          </button>
-        ))}
+        {opcoes.map((tipo) => {
+          const isSelected = formData.cardapio === tipo;
+          const textoVoz = `${tipo}. ${isSelected ? "Selecionado" : ""}`;
+
+          return (
+            <button
+              key={tipo}
+              type="button"
+              className={`${styles.opcao} ${
+                isSelected ? styles.selecionado : ""
+              }`}
+              onClick={() => {
+                setFormData({ ...formData, cardapio: tipo });
+                safeSpeak(`Você selecionou: ${tipo}`);
+              }}
+              
+              // Mouse
+              onMouseEnter={() => safeSpeak(textoVoz)}
+              onMouseLeave={stopSpeech}
+              
+              // Teclado
+              onFocus={() => handleFocusWithKeyboard(textoVoz)}
+              
+              // Acessibilidade
+              aria-pressed={isSelected}
+            >
+              {tipo}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

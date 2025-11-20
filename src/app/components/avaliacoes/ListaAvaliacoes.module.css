@@ -1,0 +1,64 @@
+.semAvaliacoes {
+  color: #666;
+  font-style: italic;
+}
+
+/* Container da lista */
+.listaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Cada avaliação */
+.reviewItem {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+/* Header com nome + data */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Informações do cliente */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ícone do usuário */
+.userIcon {
+  background: #eee;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+/* Nome do cliente */
+.nomeCliente {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Data formatada */
+.dataCriacao {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Estrelas */
+.rating {
+  margin-bottom: 5px;
+}
+
+/* Comentário */
+.comentario {
+  color: #444;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}

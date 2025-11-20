@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 
 const SPRING_URL = process.env.SPRING_API_URL;
 
-export async function GET(_request, { params }) {
-  const ownerId = params?.ownerId;
+export async function GET(_request, context) {
+  const params = await context.params;
+  const ownerId = params.ownerId;
 
   if (!ownerId) {
     return NextResponse.json(
-      { message: "ID do proprietário não encontrado na rota." },
+      { message: "ID não encontrado." },
       { status: 400 }
     );
   }
@@ -16,7 +17,8 @@ export async function GET(_request, { params }) {
     const response = await fetch(`${SPRING_URL}/cityinclui/restaurante/${ownerId}`, {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: 300 },
+ 
+      cache: "no-store", 
     });
 
     const contentType = response.headers.get("content-type") || "application/json";
@@ -24,13 +26,14 @@ export async function GET(_request, { params }) {
 
     return new NextResponse(responseBody, {
       status: response.status,
-      headers: { "content-type": contentType },
+      headers: { 
+        "content-type": contentType,
+        // Opcional: Forçar headers de não-cache para o navegador também
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
     });
   } catch (err) {
-    console.error(`Erro no Proxy (GET /restaurante/${ownerId}):`, err);
-    return NextResponse.json(
-      { message: "Erro interno do servidor Next.js", detail: err.message },
-      { status: 500 }
-    );
+    console.error(`Erro no Proxy:`, err);
+    return NextResponse.json({ message: "Erro interno" }, { status: 500 });
   }
 }
