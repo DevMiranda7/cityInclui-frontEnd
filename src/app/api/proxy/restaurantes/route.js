@@ -7,7 +7,6 @@ export async function GET() {
     const response = await fetch(`${SPRING_URL}/cityinclui/restaurantes/top5`, {
       method: "GET",
       headers: { Accept: "application/json" },
-      next: { revalidate: 300 }, // Cache de 5min
     });
 
     const contentType =

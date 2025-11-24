@@ -74,12 +74,9 @@ const ResultadosPageComponent = () => {
     };
 
     fetchResults();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, page, pageSize]); // Removi safeSpeak das deps para evitar loops, embora useCallback resolva
+  }, [query, page, pageSize]); 
 
-  // =====================================================================
-  // RENDERIZAÇÕES BASICAS (COM ACESSIBILIDADE)
-  // =====================================================================
+
   if (loading)
     return (
       <p
@@ -129,7 +126,7 @@ const ResultadosPageComponent = () => {
         onMouseLeave={stopSpeech}
         onFocus={() => handleFocusWithKeyboard(`Resultados da busca para: ${query}`)}
       >
-        Resultados para: <span>`${query}`</span>
+        Resultados para: <span> {query}</span>
       </h1>
 
       {/* LISTA */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./register.module.css";
 import { useSpeechSettings } from "../context/SpeechContext";
 import AlternadorUsuario from "../components/userAlternator/UserAlternator";
@@ -10,32 +11,32 @@ import { createOwner } from "../../lib/api/ownerService";
 import ModalMensagem from "../components/modal/ModalMensagem";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [tipoUsuario, setTipoUsuario] = useState("cliente");
   const [formData, setFormData] = useState({});
   const [foto, setFoto] = useState(null);
   const [modal, setModal] = useState({ open: false, type: "", message: "" });
-  
-  // 1. Hooks do Contexto
+
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio imediatamente (cleanup)
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup ao desmontar a página
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
   const abrirModal = (type, message) => {
     setModal({ open: true, type, message });
-    // Nota: Removemos safeSpeak(message) aqui pois o ModalMensagem já lê ao abrir
   };
 
-  const fecharModal = () => setModal({ open: false, type: "", message: "" });
+  const fecharModal = () => {
+    setModal({ open: false, type: "", message: "" });
+  };
 
   const textoAtual =
     tipoUsuario === "cliente"
@@ -59,7 +60,6 @@ export default function RegisterPage() {
           throw new Error("As senhas não conferem. Verifique e tente novamente.");
         }
 
-        // Envio para API de cadastro de cliente
         const response = await fetch("/api/proxy/cadastrar-cliente", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -71,7 +71,6 @@ export default function RegisterPage() {
           throw new Error(errorData.message || "Erro ao cadastrar cliente.");
         }
       } else {
-        // Cadastro de owner
         if (!formData.senha || !formData.confirmarSenhaAnunciante) {
           throw new Error("Por favor, preencha a senha e a confirmação.");
         }
@@ -85,8 +84,15 @@ export default function RegisterPage() {
       }
 
       abrirModal("sucesso", "Cadastro realizado com sucesso!");
+
+      // 🔥 REDIRECIONAMENTO PARA LOGIN APÓS SUCESSO
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+
       setFormData({});
       setFoto(null);
+
     } catch (error) {
       const msg = error.message || "Erro desconhecido.";
       abrirModal("erro", msg);
@@ -106,19 +112,13 @@ export default function RegisterPage() {
             }
             onMouseLeave={stopSpeech}
             onFocus={() =>
-              handleFocusWithKeyboard(
-                "Página de registro. Escolha seu tipo de usuário."
-              )
+              handleFocusWithKeyboard("Página de registro. Escolha seu tipo de usuário.")
             }
           >
             Você é:
           </h2>
 
-          {/* Componente já possui voz interna, não precisa passar props */}
-          <AlternadorUsuario
-            tipoUsuario={tipoUsuario}
-            setTipoUsuario={setTipoUsuario}
-          />
+          <AlternadorUsuario tipoUsuario={tipoUsuario} setTipoUsuario={setTipoUsuario} />
 
           <p
             className={styles.formDescription}
@@ -132,19 +132,9 @@ export default function RegisterPage() {
 
           <form className={styles.form} onSubmit={handleSubmit}>
             {tipoUsuario === "cliente" ? (
-              /* FormClient já usa contexto internamente */
-              <FormClient
-                formData={formData}
-                setFormData={setFormData}
-              />
+              <FormClient formData={formData} setFormData={setFormData} />
             ) : (
-              /* FormOwner já usa contexto internamente */
-              <FormOwner
-                formData={formData}
-                setFormData={setFormData}
-                foto={foto}
-                setFoto={setFoto}
-              />
+              <FormOwner formData={formData} setFormData={setFormData} foto={foto} setFoto={setFoto} />
             )}
 
             <div className={styles.submitWrapper}>
@@ -152,9 +142,7 @@ export default function RegisterPage() {
                 type="submit"
                 className={styles.submitButton}
                 onMouseEnter={() =>
-                  safeSpeak(
-                    "Botão cadastrar. Pressione Enter para enviar o formulário."
-                  )
+                  safeSpeak("Botão cadastrar. Pressione Enter para enviar o formulário.")
                 }
                 onMouseLeave={stopSpeech}
                 onFocus={() =>
@@ -171,9 +159,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() =>
-                  safeSpeak(
-                    "Botão cadastrar. Pressione Enter para enviar o formulário."
-                  )
+                  safeSpeak("Botão cadastrar. Pressione Enter para enviar o formulário.")
                 }
                 aria-label="Ouvir instrução do botão cadastrar"
                 className={styles.voiceButton}
@@ -188,7 +174,7 @@ export default function RegisterPage() {
           </form>
         </div>
       </main>
-      
+
       <ModalMensagem
         isOpen={modal.open}
         onClose={fecharModal}
