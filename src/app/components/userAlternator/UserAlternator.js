@@ -7,14 +7,12 @@ import { useSpeechSettings } from "../../context/SpeechContext";
 export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -31,7 +29,6 @@ export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
   return (
     <div className={styles.alternadorContainer} role="group" aria-label="Selecione o tipo de perfil">
       
-      {/* BOTÃO CLIENTE */}
       <button
         onClick={() => {
           setTipoUsuario("cliente");
@@ -52,7 +49,6 @@ export default function AlternadorUsuario({ tipoUsuario, setTipoUsuario }) {
         <span className={styles.titulo}>Cliente</span>
       </button>
 
-      {/* BOTÃO ANUNCIANTE */}
       <button
         onClick={() => {
           setTipoUsuario("anunciante");

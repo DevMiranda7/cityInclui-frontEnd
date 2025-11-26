@@ -7,35 +7,30 @@ import { useAuth } from "../context/AuthContext";
 import LoadingScreen from "../components/loading/LoadingScreen";
 import styles from "./EditarPage.module.css";
 
-// 1. Importações de Voz e Modal
 import { useSpeechSettings } from "../context/SpeechContext";
 import ModalMensagem from "../components/modal/ModalMensagem";
 
 export default function EditarPageOwner() {
   const { userType, loadingUser } = useAuth();
 
-  // 2. Hooks de Voz
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
   const [dadosRestaurante, setDadosRestaurante] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
 
-  // 3. Estados do Modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("sucesso");
   const [modalMessage, setModalMessage] = useState("");
 
   const router = useRouter();
 
-  // Função auxiliar para parar o áudio (cleanup)
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz ao desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -62,7 +57,6 @@ export default function EditarPageOwner() {
         });
       } catch (error) {
         console.error(error);
-        // Feedback visual e sonoro de erro ao carregar
         setModalType("erro");
         setModalMessage("Não foi possível carregar os dados do restaurante.");
         setModalOpen(true);
@@ -77,7 +71,7 @@ export default function EditarPageOwner() {
   const handleSalvar = async (dadosAtualizados, novaFotoFile) => {
     try {
       setSalvando(true);
-      safeSpeak("Salvando alterações do restaurante..."); // Feedback de voz
+      safeSpeak("Salvando alterações do restaurante...");
 
       const updatedData = await updateOwnerProfile(
         dadosAtualizados,
@@ -86,15 +80,12 @@ export default function EditarPageOwner() {
 
       const idRestaurante = updatedData.id || dadosRestaurante.id;
       
-      // Para o áudio antes de navegar
       stopSpeech();
       router.refresh();
       router.push(`/restaurante/${idRestaurante}`);
     } catch (error) {
       console.error(error);
-      setSalvando(false); // Para o loading se der erro
-
-      // 4. Substituição do Alert pelo Modal
+      setSalvando(false);
       setModalType("erro");
       setModalMessage("Erro ao salvar as alterações. Tente novamente.");
       setModalOpen(true);
@@ -127,7 +118,6 @@ export default function EditarPageOwner() {
       <button 
         onClick={handleCancelar} 
         className={styles.backButton}
-        // Voz no botão voltar
         onMouseEnter={() => safeSpeak("Botão Voltar")}
         onMouseLeave={stopSpeech}
         onFocus={() => handleFocusWithKeyboard("Botão Voltar")}
@@ -138,7 +128,6 @@ export default function EditarPageOwner() {
       <h1 
         className={styles.title}
         tabIndex={0}
-        // Voz no Título
         onMouseEnter={() => safeSpeak("Editar Informações do Restaurante")}
         onMouseLeave={stopSpeech}
         onFocus={() => handleFocusWithKeyboard("Editar Informações do Restaurante")}
@@ -174,8 +163,6 @@ export default function EditarPageOwner() {
           </div>
         </div>
       )}
-
-      {/* 5. Modal de Mensagem */}
       <ModalMensagem
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

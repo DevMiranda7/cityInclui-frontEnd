@@ -15,21 +15,18 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
 
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar qualquer áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 1. Efeito para cancelar a voz ao desmontar o componente (Mudar de página)
   useEffect(() => {
     return () => {
       stopSpeech();
     };
   }, []);
 
-  // Carregar restaurantes
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
@@ -45,7 +42,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
     fetchRestaurants();
   }, []);
 
-  // Rotação automática
   useEffect(() => {
     if (!autoRotate || restaurants.length === 0) return;
 
@@ -57,11 +53,10 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
     return () => clearInterval(interval);
   }, [restaurants.length, autoRotate]);
 
-  // Voz automática a cada slide (Só fala se o usuário não estiver interagindo manualmente em outro lugar)
   useEffect(() => {
     if (restaurants.length === 0) return;
 
-    // Pequeno delay para evitar sobreposição se a troca for muito rápida
+
     const timer = setTimeout(() => {
         const current = restaurants[currentSlide];
         const texto = `
@@ -108,14 +103,12 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
     <section
       className={styles.restaurantsSection}
       aria-label="Carrossel de restaurantes em destaque"
-      // 2. Para o áudio se o usuário tirar o mouse da seção inteira
       onMouseLeave={stopSpeech}
     >
       <h2
         tabIndex={0}
         className={styles.sectionTitle}
         onMouseEnter={() => safeSpeak("Restaurantes em destaque")}
-        // Adicionado onMouseLeave para cortar o áudio ao sair do título
         onMouseLeave={stopSpeech} 
         onFocus={() =>
           handleFocusWithKeyboard("Restaurantes em destaque")
@@ -125,7 +118,7 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
       </h2>
 
       <div className={styles.rotatingRestaurant}>
-        {/* Botão anterior */}
+
         <button
           className={`${styles.slideArrow} ${styles.prevArrow}`}
           onClick={goToPrevSlide}
@@ -137,7 +130,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
           }
         />
 
-        {/* Slides */}
         {restaurants.map((restaurant, index) => (
           <div
             key={restaurant.id || index}
@@ -145,7 +137,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
               index === currentSlide ? styles.active : ""
             }`}
           >
-            {/* Imagem */}
             <img
               tabIndex={0}
               src={
@@ -172,7 +163,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
             />
 
             <div className={styles.restaurantInfo}>
-              {/* Nome */}
               <h3
                 tabIndex={0}
                 className={styles.restaurantName}
@@ -191,7 +181,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 {restaurant.nomeDoRestaurante || "Nome não informado"}
               </h3>
 
-              {/* Categoria (cardápio) */}
               <p
                 tabIndex={0}
                 className={styles.restaurantCategory}
@@ -210,7 +199,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 {restaurant.cardapio || "Cardápio não informado"}
               </p>
 
-              {/* Avaliação */}
               <div
                 tabIndex={0}
                 className={styles.rating}
@@ -243,7 +231,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 </div>
               </div>
 
-              {/* Acessibilidade */}
               <div className={styles.accessibilityTags}>
                 {(restaurant.acessibilidadeDTOS || []).map((dto) => (
                   <span
@@ -265,7 +252,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 ))}
               </div>
 
-              {/* Descrição */}
               <p
                 tabIndex={0}
                 className={styles.restaurantDescription}
@@ -284,7 +270,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                 {restaurant.descricao || "Descrição não disponível"}
               </p>
 
-              {/* Botão Ver Detalhes */}
               <Link
                 href={`/restaurante/${restaurant.id}`}
                 className={styles.btn}
@@ -294,7 +279,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
                   )
                 }
                 onMouseLeave={stopSpeech}
-                // Ao clicar, também força a parada da voz atual para carregar a nova página em silêncio
                 onClick={stopSpeech} 
                 onFocus={() =>
                   handleFocusWithKeyboard(
@@ -308,7 +292,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
           </div>
         ))}
 
-        {/* Botão próximo */}
         <button
           className={`${styles.slideArrow} ${styles.nextArrow}`}
           onClick={goToNextSlide}
@@ -319,7 +302,6 @@ const RestaurantCarousel = ({ autoRotate = true }) => {
         />
       </div>
 
-      {/* Dots */}
       <div className={styles.restaurantControls}>
         {restaurants.map((_, index) => (
           <div

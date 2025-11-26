@@ -9,17 +9,14 @@ import Acessibilidades from "../accessibility/Acessibilidades";
 export default function FormOwner({ formData, setFormData, setFoto }) {
   const [telefone, setTelefone] = useState("");
   
-  // 1. Hooks do Contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup ao desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -41,7 +38,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
       role="group"
       aria-label="Formulário de cadastro de anunciante"
     >
-      {/* Nome do Restaurante */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -69,7 +65,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.nomeDoRestaurante || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo Nome do Restaurante. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar o nome do restaurante.")}
@@ -77,7 +72,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Nome do Anunciante */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -105,7 +99,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.nomeDoAnunciante || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo Nome do Responsável. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar seu nome completo.")}
@@ -113,10 +106,8 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Componente Cardápio (Já possui voz interna) */}
       <Cardapio formData={formData} setFormData={setFormData} />
 
-      {/* Descrição */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -146,7 +137,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.descricao || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo de texto Descrição. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar a descrição do restaurante.")}
@@ -154,10 +144,8 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Componente Acessibilidades (Já possui voz interna) */}
       <Acessibilidades formData={formData} setFormData={setFormData} />
 
-      {/* Email */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -185,7 +173,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.email || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo E-mail de contato. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar o e-mail de contato.")}
@@ -193,7 +180,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Telefone */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -222,7 +208,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           maxLength={11}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo Telefone. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar o telefone com DDD.")}
@@ -230,7 +215,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Senha */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -258,7 +242,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.senha || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo Senha. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar sua senha.")}
@@ -266,7 +249,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Confirmar Senha */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -294,7 +276,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           value={formData.confirmarSenhaAnunciante || ""}
           onChange={handleChange}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo Confirmar Senha. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Repita a senha digitada anteriormente.")}
@@ -302,7 +283,6 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
         />
       </div>
 
-      {/* Componente Upload (Geralmente lida com sua própria UI, mas pode receber props se necessário) */}
       <UploadImagem onFileSelect={setFoto} />
     </div>
   );

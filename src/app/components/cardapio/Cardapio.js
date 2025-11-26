@@ -19,14 +19,12 @@ export default function Cardapio({ formData, setFormData }) {
 
   const descricaoCampo = "Tipo de cardápio. Selecione a culinária principal";
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -58,7 +56,7 @@ export default function Cardapio({ formData, setFormData }) {
         className={styles.lista}
         role="group"
         aria-label="Opções de culinária"
-        onMouseLeave={stopSpeech} // Para áudio se sair da área da lista
+        onMouseLeave={stopSpeech}
       >
         {opcoes.map((tipo) => {
           const isSelected = formData.cardapio === tipo;
@@ -76,14 +74,11 @@ export default function Cardapio({ formData, setFormData }) {
                 safeSpeak(`Você selecionou: ${tipo}`);
               }}
               
-              // Mouse
               onMouseEnter={() => safeSpeak(textoVoz)}
               onMouseLeave={stopSpeech}
               
-              // Teclado
               onFocus={() => handleFocusWithKeyboard(textoVoz)}
-              
-              // Acessibilidade
+          
               aria-pressed={isSelected}
             >
               {tipo}

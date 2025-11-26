@@ -13,26 +13,23 @@ export default function ResultsModal({
   const modalRef = useRef(null);
   const router = useRouter();
 
-  // Importando funções do contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // Detectar clique fora
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        stopSpeech(); // Para a leitura do item anterior
+        stopSpeech();
         safeSpeak("Fechando resultados da pesquisa.");
         onClose();
       }
@@ -62,7 +59,7 @@ export default function ResultsModal({
   }
 
   const handleSelect = (item) => {
-    stopSpeech(); // Para qualquer áudio atual
+    stopSpeech();
     const nome = item.nomeDoRestaurante || "Restaurante";
     const itemId = getItemId(item);
 
@@ -92,7 +89,7 @@ export default function ResultsModal({
       className={styles.suggestionsDropdown}
       role="listbox"
       aria-label="Resultados da pesquisa"
-      onMouseLeave={stopSpeech} // Para o áudio se o mouse sair da lista inteira
+      onMouseLeave={stopSpeech}
     >
       <ul className={styles.suggestionsList}>
         {list.map((item, index) => {
@@ -113,12 +110,10 @@ export default function ResultsModal({
               role="option"
               aria-label={`${nome} — ${culinaria}`}
               
-              // Eventos de Voz e Teclado
               onFocus={() => handleFocusWithKeyboard(textoFalado)}
               onMouseEnter={() => safeSpeak(textoFalado)}
-              onMouseLeave={stopSpeech} // Corta o áudio ao mover para o próximo item
+              onMouseLeave={stopSpeech}
               
-              // Ações
               onClick={() => handleSelect(item)}
               onKeyDown={(e) => handleKeyDown(e, item)}
             >

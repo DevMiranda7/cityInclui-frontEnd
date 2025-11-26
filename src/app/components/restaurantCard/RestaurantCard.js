@@ -20,7 +20,6 @@ const getAccessibilityText = (restaurant) => {
 };
 
 export default function RestaurantCard({ restaurant }) {
-  // Atualizado: usamos safeSpeak em vez de speakText
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
   const accessibilitySpeakText = getAccessibilityText(restaurant);
@@ -41,9 +40,7 @@ export default function RestaurantCard({ restaurant }) {
         href={`/restaurante/${restaurant.id}`}
         className={styles.resultLink}
         aria-label={linkDescription}
-        // Atualizado para usar safeSpeak
         onMouseEnter={() => safeSpeak(linkDescription)}
-        // Mantido handleFocusWithKeyboard que já existia no contexto novo
         onFocus={() => handleFocusWithKeyboard(linkDescription)}
       >
         <div className={styles.cardImageContainer}>
@@ -51,8 +48,6 @@ export default function RestaurantCard({ restaurant }) {
             src={imageUrl}
             alt={`Imagem do restaurante ${restaurant.nomeDoRestaurante}`}
             className={styles.cardImage}
-            // Opcional: Feedback de voz na imagem se desejar
-            // onMouseEnter={() => safeSpeak(`Foto de ${restaurant.nomeDoRestaurante}`)}
           />
         </div>
 

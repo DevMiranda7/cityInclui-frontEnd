@@ -5,22 +5,19 @@ import { createContext, useContext, useState, useEffect, useRef, useCallback } f
 const SpeechContext = createContext();
 
 export function SpeechProvider({ children }) {
-  // null -> ainda carregando preferências; boolean -> estado conhecido
   const [speechEnabled, setSpeechEnabled] = useState(null);
   const speakTimeoutRef = useRef(null);
   const lastInteractionByKeyboard = useRef(false);
 
-  // Carregar preferência
   useEffect(() => {
     try {
       const saved = localStorage.getItem("speechEnabled");
-      setSpeechEnabled(saved !== "false"); // padrão true
+      setSpeechEnabled(saved !== "false");
     } catch {
       setSpeechEnabled(true);
     }
   }, []);
 
-  // Persistir preferência quando disponível
   useEffect(() => {
     if (speechEnabled !== null) {
       try {
@@ -33,7 +30,6 @@ export function SpeechProvider({ children }) {
     setSpeechEnabled((prev) => (prev === null ? true : !prev));
   }, []);
 
-  // função primária (internal) que efetivamente fala — assume que já checaram habilitação
   const _speak = useCallback((text) => {
     if (!text) return;
     if (typeof window === "undefined") return;
@@ -49,13 +45,10 @@ export function SpeechProvider({ children }) {
         utt.pitch = 1;
         window.speechSynthesis.speak(utt);
       } catch (e) {
-        // swallow
-        // console.warn("speech error", e);
       }
     }, 80);
   }, []);
 
-  // função pública segura: só fala quando speechEnabled === true (não fala quando null/false)
   const safeSpeak = useCallback(
     (text) => {
       if (speechEnabled !== true) return;
@@ -64,7 +57,6 @@ export function SpeechProvider({ children }) {
     [_speak, speechEnabled]
   );
 
-  // detectar se foco veio do teclado
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Tab") lastInteractionByKeyboard.current = true;
@@ -82,12 +74,11 @@ export function SpeechProvider({ children }) {
     };
   }, []);
 
-  // desbloquear a API de forma silenciosa (sem falar): algumas plataformas exigem interação do usuário
   useEffect(() => {
     function unlockAudio() {
       try {
         const utter = new SpeechSynthesisUtterance();
-        utter.volume = 0; // silencioso
+        utter.volume = 0;
         window.speechSynthesis.speak(utter);
       } catch {}
     }
@@ -101,7 +92,6 @@ export function SpeechProvider({ children }) {
     };
   }, []);
 
-  // função auxiliar para lidar com focus via teclado
   const handleFocusWithKeyboard = useCallback(
     (text) => {
       if (lastInteractionByKeyboard.current) safeSpeak(text);
@@ -112,7 +102,7 @@ export function SpeechProvider({ children }) {
   return (
     <SpeechContext.Provider
       value={{
-        speechEnabled, // null | true | false
+        speechEnabled,
         toggleSpeech,
         safeSpeak,
         handleFocusWithKeyboard,

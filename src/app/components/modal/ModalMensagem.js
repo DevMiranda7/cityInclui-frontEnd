@@ -13,7 +13,6 @@ export default function ModalMensagem({
 }) {
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
@@ -23,17 +22,14 @@ export default function ModalMensagem({
   const titulo = type === "erro" ? "Erro" : "Sucesso";
   const cor = type === "erro" ? styles.erro : styles.sucesso;
 
-  // Efeito: Lê a mensagem automaticamente ao abrir e para ao fechar
   useEffect(() => {
     if (isOpen) {
-      // Pequeno delay para garantir que o foco mudou e não haja conflito de áudio
       const timer = setTimeout(() => {
         safeSpeak(`Alerta: ${titulo}. ${message}`);
       }, 100);
       return () => clearTimeout(timer);
     }
     
-    // Cleanup: Para a voz se o modal fechar (isOpen false) ou componente desmontar
     return () => stopSpeech();
   }, [isOpen, titulo, message, safeSpeak]);
 
@@ -47,7 +43,7 @@ export default function ModalMensagem({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose} // Fecha ao clicar fora
+          onClick={onClose}
         >
           <motion.div
             className={`${styles.modal} ${cor}`}
@@ -57,7 +53,7 @@ export default function ModalMensagem({
             role="alertdialog"
             aria-labelledby="modal-titulo"
             aria-describedby="modal-mensagem"
-            onClick={(e) => e.stopPropagation()} // Evita fechar ao clicar dentro
+            onClick={(e) => e.stopPropagation()} 
           >
             <h3
               id="modal-titulo"
@@ -84,7 +80,7 @@ export default function ModalMensagem({
             <button
               className={styles.botaoFechar}
               onClick={() => {
-                stopSpeech(); // Para a voz antes de fechar
+                stopSpeech();
                 onClose();
               }}
               onMouseEnter={() =>

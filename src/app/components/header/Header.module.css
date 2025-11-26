@@ -8,7 +8,6 @@
   border-bottom: 1px solid #eee;
 }
 
-/* Grid de 3 colunas: Esquerda (1fr), Centro (Auto), Direita (1fr) */
 .contentWrapper {
   display: grid;
   grid-template-columns: 1fr auto 1fr; 
@@ -17,11 +16,10 @@
   margin: 0 auto;
 }
 
-/* --- SEÇÃO ESQUERDA (Logo + Home) --- */
 .leftSection {
   display: flex;
   align-items: center;
-  gap: 3rem; /* Distância entre Logo e Home */
+  gap: 3rem; 
   justify-self: start;
 }
 
@@ -43,12 +41,11 @@
   color: #3a7bd5;
 }
 
-/* --- SEÇÃO CENTRAL (Ícone) --- */
 .centerSection {
   display: flex;
   justify-content: center;
   align-items: center;
-  justify-self: center; /* Garante o centro absoluto */
+  justify-self: center;
 }
 
 .iconButton {
@@ -70,7 +67,6 @@
   transform: scale(1.1);
 }
 
-/* --- SEÇÃO DIREITA (User + Voz) --- */
 .userArea {
   display: flex;
   align-items: center;
@@ -78,7 +74,6 @@
   justify-self: end;
 }
 
-/* Estilos do Usuário */
 .userContainer {
   position: relative;
   display: flex;
@@ -133,7 +128,6 @@
   color: #3a7bd5;
 }
 
-/* Dropdown Menu */
 .dropdownMenu {
   position: absolute;
   top: 120%;
@@ -174,7 +168,7 @@
   color: #3a7bd5;
 }
 
-/* Links Gerais */
+
 .navLink {
   text-decoration: none;
   color: #555;
@@ -199,7 +193,7 @@
   padding: 0;
 }
 
-/* Toggle de Voz */
+
 .speechToggle {
   background: none;
   border: none;
@@ -219,13 +213,11 @@
   background-color: #f8f9fa;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .navLink {
-    display: none; /* Esconde Home em mobile se necessário */
+    display: none; 
   }
   .contentWrapper {
-      /* Ajusta grid no mobile */
       grid-template-columns: auto 1fr auto;
   }
 }

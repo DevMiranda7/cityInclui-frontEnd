@@ -23,21 +23,16 @@ const ResultadosPageComponent = () => {
 
   const pageSize = 9;
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // =====================================================================
-  // 🔍 BUSCA DE RESULTADOS
-  // =====================================================================
   useEffect(() => {
     const fetchResults = async () => {
       if (!query) {
@@ -58,9 +53,6 @@ const ResultadosPageComponent = () => {
 
         setResults(list);
         setTotalPages(Math.ceil(total / pageSize));
-
-        // 🔊 Feedback de voz ao carregar resultados
-        // Pequeno delay para não atropelar o "Carregando"
         setTimeout(() => {
            safeSpeak(`Resultados da busca por ${query}, página ${page + 1}`);
         }, 500);
@@ -118,7 +110,6 @@ const ResultadosPageComponent = () => {
 
   return (
     <section className={styles.pageContainer}>
-      {/* TÍTULO */}
       <h1
         className={styles.pageTitle}
         tabIndex={0}
@@ -128,16 +119,12 @@ const ResultadosPageComponent = () => {
       >
         Resultados para: <span> {query}</span>
       </h1>
-
-      {/* LISTA */}
       <ul className={styles.resultsGrid}>
         {results.map((restaurant) => (
-          // O Card já tem sua própria lógica de voz interna
           <RestaurantCard key={restaurant.id} restaurant={restaurant} />
         ))}
       </ul>
 
-      {/* PAGINAÇÃO */}
       {totalPages > 1 && (
         <div 
             className={styles.paginationContainer} 
@@ -145,7 +132,6 @@ const ResultadosPageComponent = () => {
             aria-label="Paginação"
             onMouseLeave={stopSpeech}
         >
-          {/* VOLTAR */}
           <button
             className={`${styles.pageButton} ${
               page <= 0 ? styles.disabled : ""
@@ -160,7 +146,6 @@ const ResultadosPageComponent = () => {
             ←
           </button>
 
-          {/* NUMERAÇÃO */}
           {(() => {
             const pagesToShow = Array.from({ length: totalPages }, (_, i) => i)
               .filter(
@@ -207,7 +192,6 @@ const ResultadosPageComponent = () => {
             });
           })()}
 
-          {/* AVANÇAR */}
           <button
             className={`${styles.pageButton} ${
               page + 1 >= totalPages ? styles.disabled : ""
@@ -224,7 +208,6 @@ const ResultadosPageComponent = () => {
         </div>
       )}
 
-      {/* VOLTAR AO INÍCIO */}
       <button
         className={styles.backButton}
         onClick={() => router.back()}

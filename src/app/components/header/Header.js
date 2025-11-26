@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
-// IMPORTANTE: Importar o hook do contexto de voz
 import { useSpeechSettings } from "../../context/SpeechContext"; 
 import {
   Volume2,
@@ -20,7 +19,6 @@ export default function Header() {
   const { userType, userId, loadingUser, logout } = useAuth();
   const router = useRouter();
 
-  // Consumir o contexto global em vez de criar estado local
   const { speechEnabled, toggleSpeech, safeSpeak } = useSpeechSettings();
 
   const [dropdownAberto, setDropdownAberto] = useState(false);
@@ -32,16 +30,9 @@ export default function Header() {
     }
   };
 
-  /* 🔊 Botão para ativar/desativar voz */
   const handleToggleSpeech = () => {
-    // Apenas chama a função do contexto que inverte o valor global
     toggleSpeech();
-    
-    // Opcional: Feedback auditivo imediato (apenas se estiver ativando)
     if (!speechEnabled) {
-       // Como o estado updates assincronamente, forçamos o speak aqui se desejado,
-       // ou deixamos o usuário perceber pela mudança de ícone.
-       // Devido ao "safeSpeak" bloquear quando false, o feedback de "Desativado" é mudo (o que é correto em a11y).
        setTimeout(() => safeSpeak("Leitura por voz ativada."), 100);
     }
   };
@@ -63,7 +54,6 @@ export default function Header() {
   return (
     <header className={styles.headerContainer}>
       <nav className={styles.contentWrapper}>
-        {/* LEFT / LOGO */}
         <div className={styles.leftSection}>
           <div
             className={styles.logo}
@@ -90,7 +80,6 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* CENTER */}
         <div className={styles.centerSection}>
           {userType === "OWNER" && userId && (
             <button
@@ -106,9 +95,7 @@ export default function Header() {
           )}
         </div>
 
-        {/* RIGHT */}
         <div className={styles.userArea}>
-          {/* TOGGLE DE VOZ */}
           <button
             onClick={handleToggleSpeech}
             className={styles.speechToggle}
@@ -132,7 +119,6 @@ export default function Header() {
             {speechEnabled ? <Volume2 /> : <VolumeX />}
           </button>
 
-          {/* USER AREA */}
           {loadingUser ? (
             <div className={styles.loadingUser}>...</div>
           ) : userType ? (

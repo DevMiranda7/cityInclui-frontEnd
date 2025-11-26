@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const SPRING_URL = process.env.SPRING_API_URL;
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
 
 export async function GET(_request, context) {
   const params = await context.params;
@@ -28,7 +28,6 @@ export async function GET(_request, context) {
       status: response.status,
       headers: { 
         "content-type": contentType,
-        // Opcional: Forçar headers de não-cache para o navegador também
         "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
       },
     });

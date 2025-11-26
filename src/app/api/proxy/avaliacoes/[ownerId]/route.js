@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const SPRING_URL = process.env.SPRING_API_URL
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
 
 
 export async function GET(request, context) {
@@ -22,7 +22,6 @@ export async function GET(request, context) {
   }
 }
 
-// POST: Criar Avaliação (Privado - Requer Token)
 export async function POST(request, context) {
   const params = await context.params;
   const ownerId = params.ownerId;
@@ -37,8 +36,6 @@ export async function POST(request, context) {
 
     const body = await request.json();
 
-    // Mapeia o body do Front para o DTO do Java (CreateReviewDTO)
-    // Ajuste os campos conforme seu DTO Java (ex: nota, comentario)
     const payload = {
       nota: body.rating,
       comentario: body.comentario
