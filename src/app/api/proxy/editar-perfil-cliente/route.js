@@ -12,7 +12,6 @@ export async function PUT(request) {
       return NextResponse.json({ message: "Não autenticado" }, { status: 401 });
     }
 
-    // 2. Lê o corpo (JSON) enviado pelo service
     const body = await request.json();
 
 
