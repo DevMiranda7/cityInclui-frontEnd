@@ -10,38 +10,33 @@ import ListaAvaliacoes from "../avaliacoes/ListaAvaliacoes";
 
 import { useAuth } from "../../context/AuthContext";
 import { createReview, getReviews } from "@/src/lib/api/reviewService";
-import { useSpeechSettings } from "../../context/SpeechContext"; // ⬅️ Importação do Contexto
+import { useSpeechSettings } from "../../context/SpeechContext";
 
-// ⬅️ IMPORTAÇÃO DO MODAL
 import ModalMensagem from "../modal/ModalMensagem";
 
 export default function PerfilRestaurante({ restaurante }) {
   const { userType } = useAuth();
-  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings(); // ⬅️ Hook de voz
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings(); 
 
   const [avaliacoes, setAvaliacoes] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
 
   const isClient = userType === "CLIENT";
 
-  // Estados do Modal
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("sucesso");
   const [modalMessage, setModalMessage] = useState("");
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // Carregar avaliações
   useEffect(() => {
     if (restaurante?.id) {
       getReviews(restaurante.id)
@@ -66,23 +61,20 @@ export default function PerfilRestaurante({ restaurante }) {
   const listaAcessibilidades =
     restaurante.acessibilidadeDTOS?.map((a) => a.acessibilidade) || [];
 
-  // Envio da avaliação
   const handleSubmitAvaliacao = async (dados) => {
     if (!isClient) return;
 
     try {
-      stopSpeech(); // Para qualquer voz anterior
+      stopSpeech();
       const novaReview = await createReview(restaurante.id, dados);
       setAvaliacoes((prev) => [novaReview, ...prev]);
 
-      // ✔ Modal de sucesso
       setModalType("sucesso");
       setModalMessage("Avaliação enviada com sucesso!");
       setModalOpen(true);
     } catch (error) {
       console.error(error);
 
-      // ✔ Modal de erro
       setModalType("erro");
       setModalMessage(error.message);
       setModalOpen(true);
@@ -91,7 +83,6 @@ export default function PerfilRestaurante({ restaurante }) {
 
   return (
     <div className={styles.container}>
-      {/* FOTOS */}
       <div className={styles.photos}>
         {restaurante.photo?.length > 0 ? (
           restaurante.photo.map((photo, i) => (
@@ -127,7 +118,6 @@ export default function PerfilRestaurante({ restaurante }) {
         )}
       </div>
 
-      {/* INFORMAÇÕES */}
       <div className={styles.infoRestaurante}>
         <h1
           tabIndex={0}
@@ -151,7 +141,6 @@ export default function PerfilRestaurante({ restaurante }) {
         </p>
       </div>
 
-      {/* CARDÁPIO */}
       <div className={styles.cardapioWrapper}>
         <h2
           tabIndex={0}
@@ -164,7 +153,6 @@ export default function PerfilRestaurante({ restaurante }) {
         <ExibirCardapio culinaria={tipoCulinaria} />
       </div>
 
-      {/* ACESSIBILIDADES */}
       <div className={styles.acessibilidadeWrapper}>
         <h2
           tabIndex={0}
@@ -177,7 +165,6 @@ export default function PerfilRestaurante({ restaurante }) {
         <ExibirAcessibilidades acessibilidades={listaAcessibilidades} />
       </div>
 
-      {/* AVALIAÇÕES */}
       <div className={styles.avaliacaoWrapper}>
         <h2
           tabIndex={0}
@@ -202,7 +189,6 @@ export default function PerfilRestaurante({ restaurante }) {
 
         <div className={styles.divider}></div>
 
-        {/* FORMULÁRIO DE AVALIAÇÃO */}
         {isClient ? (
           <div>
             <h3
@@ -232,7 +218,6 @@ export default function PerfilRestaurante({ restaurante }) {
         ) : null}
       </div>
 
-      {/* ✔ MODAL DE MENSAGEM */}
       <ModalMensagem
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

@@ -1,4 +1,3 @@
-/* CONTAINER PRINCIPAL */
 .loginContainer {
   display: flex;
   flex-direction: row;
@@ -22,7 +21,6 @@
   max-width: 380px;
 }
 
-/* LADO DIREITO */
 .loginRight {
   flex: 1;
   display: flex;
@@ -31,7 +29,6 @@
   max-width: 350px;
 }
 
-/* CARD */
 .loginCard {
   background: white;
   border: 1px solid #dbdbdb;
@@ -43,7 +40,6 @@
   margin-bottom: 10px;
 }
 
-/* LOGO */
 .logo {
   display: block;
   text-align: center;
@@ -58,7 +54,6 @@
   color: #667eea;
 }
 
-/* TOGGLE CLIENTE / OWNER */
 .userTypeSelector {
   display: flex;
   justify-content: center;
@@ -87,13 +82,11 @@
   transition: all 0.25s ease;
 }
 
-/* HOVER */
 .userTypeOption label:hover {
   border-color: #b9b9ff;
   background: #f4f4ff;
 }
 
-/* SELECIONADO */
 .userTypeOption input:checked + label {
   background: linear-gradient(90deg, #667eea, #6d48e8);
   border-color: #667eea;
@@ -102,7 +95,6 @@
   transform: translateY(-1px);
 }
 
-/* FORMULÁRIO */
 .loginForm {
   display: flex;
   flex-direction: column;
@@ -173,7 +165,6 @@
   text-decoration: none;
 }
 
-/* RESPONSIVO */
 @media (max-width: 768px) {
   .loginContainer {
     flex-direction: column;

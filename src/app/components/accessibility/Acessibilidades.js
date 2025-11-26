@@ -19,22 +19,18 @@ export default function Acessibilidades({ formData, setFormData }) {
   const descricaoCampo =
     "Acessibilidades. Selecione um ou mais itens que seu restaurante oferece.";
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // GARANTIR QUE SEMPRE TEMOS UM ARRAY
   let listaAtual = formData.acessibilidades || [];
 
-  // Se for um objeto (estrutura antiga), converter para array
   if (typeof listaAtual === "object" && !Array.isArray(listaAtual)) {
     listaAtual = Object.keys(listaAtual).filter(
       (key) => listaAtual[key] === true
@@ -91,7 +87,7 @@ export default function Acessibilidades({ formData, setFormData }) {
 
       <div
         className={styles.lista}
-        onMouseLeave={stopSpeech} // Para o áudio se sair da área da lista
+        onMouseLeave={stopSpeech}
         role="group"
         aria-label="Opções de acessibilidade"
       >
@@ -108,14 +104,11 @@ export default function Acessibilidades({ formData, setFormData }) {
               }`}
               onClick={() => handleSelect(tipo)}
               
-              // Mouse
               onMouseEnter={() => safeSpeak(textoVoz)}
               onMouseLeave={stopSpeech}
               
-              // Teclado
               onFocus={() => handleFocusWithKeyboard(textoVoz)}
               
-              // Acessibilidade nativa
               aria-pressed={isSelected}
             >
               {tipo}

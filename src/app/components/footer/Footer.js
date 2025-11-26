@@ -15,7 +15,6 @@ export default function Footer() {
     >
       <div className={styles.container}>
         <div className={styles.contentGrid}>
-          {/* Seção 1: CityInclui */}
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <h4
@@ -56,7 +55,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Seção 2: Contato */}
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <h4
@@ -112,7 +110,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Seção 3: Redes Sociais */}
           <div className={styles.section}>
             <div className={styles.labelContainer}>
               <h4

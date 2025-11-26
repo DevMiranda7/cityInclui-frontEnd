@@ -29,7 +29,6 @@ export default function FilterMenu({ showFilter, foodTypes, onSelect, onClose })
       ref={menuRef}
       className={styles.filterDropdown}
       tabIndex={0}
-      // não falar automaticamente ao abrir; falar apenas quando realmente houver mouseenter/focus
       onMouseEnter={() => {}}
       onFocus={() => {}}
     >

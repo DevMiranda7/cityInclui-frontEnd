@@ -1,5 +1,3 @@
-// src/lib/api/clientService.js
-
 export async function createClient(clientData) {
   try {
     const response = await fetch("/api/proxy/cliente", {
@@ -39,7 +37,7 @@ export async function getProfileClient() {
   try {
     const response = await fetch("/api/proxy/perfil-cliente", {
       method: "GET",
-      credentials: "include", // mantém o padrão de enviar cookies de autenticação
+      credentials: "include",
     });
 
     const data = await response.json();
@@ -59,13 +57,12 @@ export async function getProfileClient() {
 
 export async function updateClientProfile(dadosFormulario) {
   try {
-    // 1. Prepara o objeto exatamente como o UpdateCustomerDTO do Java espera
+
     const payloadJava = {
-      nomeCompleto: dadosFormulario.nome, // Mapeia 'nome' do front para 'nomeCompleto' do Java
+      nomeCompleto: dadosFormulario.nome,
       telefone: dadosFormulario.telefone,
     };
 
-    // 2. Envia para o Proxy
     const response = await fetch("/api/proxy/editar-perfil-cliente", {
       method: "PUT",
       headers: {
@@ -77,7 +74,6 @@ export async function updateClientProfile(dadosFormulario) {
     const data = await response.json();
 
     if (!response.ok) {
-      // Tenta pegar a mensagem de validação do DTO (ex: "O nome deve ter entre 3 e 50...")
       const errorMessage = data.message || (data.errors ? data.errors[0] : "Erro ao atualizar perfil");
       throw new Error(errorMessage);
     }

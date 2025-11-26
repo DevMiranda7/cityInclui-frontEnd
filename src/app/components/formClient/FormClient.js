@@ -6,14 +6,12 @@ import { useSpeechSettings } from "../../context/SpeechContext";
 export default function FormClient({ formData, setFormData }) {
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -34,7 +32,6 @@ export default function FormClient({ formData, setFormData }) {
       role="form"
       aria-label="Formulário de cadastro de cliente"
     >
-      {/* Nome Completo */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -61,7 +58,6 @@ export default function FormClient({ formData, setFormData }) {
           value={formData.nomeCompleto || ""}
           onChange={handleChange}
           required
-          // ⬇️ VOZ NO INPUT ⬇️
           onMouseEnter={() => safeSpeak("Campo Nome Completo. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar seu nome agora.")}
@@ -69,7 +65,6 @@ export default function FormClient({ formData, setFormData }) {
         />
       </div>
 
-      {/* Telefone */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -98,7 +93,6 @@ export default function FormClient({ formData, setFormData }) {
           maxLength={11}
           inputMode="numeric"
           required
-          // ⬇️ VOZ NO INPUT ⬇️
           onMouseEnter={() => safeSpeak("Campo Telefone. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar o telefone com DDD.")}
@@ -106,7 +100,6 @@ export default function FormClient({ formData, setFormData }) {
         />
       </div>
 
-      {/* Email */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -133,7 +126,6 @@ export default function FormClient({ formData, setFormData }) {
           value={formData.email || ""}
           onChange={handleChange}
           required
-          // ⬇️ VOZ NO INPUT ⬇️
           onMouseEnter={() => safeSpeak("Campo E-mail. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar seu e-mail agora.")}
@@ -141,7 +133,6 @@ export default function FormClient({ formData, setFormData }) {
         />
       </div>
 
-      {/* Senha */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -168,7 +159,6 @@ export default function FormClient({ formData, setFormData }) {
           value={formData.senha || ""}
           onChange={handleChange}
           required
-          // ⬇️ VOZ NO INPUT ⬇️
           onMouseEnter={() => safeSpeak("Campo Senha. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar sua senha segura.")}
@@ -176,7 +166,6 @@ export default function FormClient({ formData, setFormData }) {
         />
       </div>
 
-      {/* Confirmar Senha */}
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
@@ -203,7 +192,6 @@ export default function FormClient({ formData, setFormData }) {
           value={formData.confirmarSenha || ""}
           onChange={handleChange}
           required
-          // ⬇️ VOZ NO INPUT ⬇️
           onMouseEnter={() => safeSpeak("Campo Confirmar Senha. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Repita a senha digitada anteriormente.")}

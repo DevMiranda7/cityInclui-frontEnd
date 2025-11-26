@@ -10,17 +10,14 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
   const [formData, setFormData] = useState({});
   const [novaFoto, setNovaFoto] = useState(null);
   
-  // 1. Hooks do Contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -50,7 +47,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
     onSave(formData, novaFoto);
   };
 
-  // --- VERIFICAR MUDANÇAS ---
   const temAlteracoes = () => {
     if (novaFoto) return true;
     if (!initialData || !formData) return false;
@@ -66,7 +62,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
         aria-label="Formulário de edição de restaurante"
         style={{ display: "contents" }}
       >
-        {/* --- LINHA 1: NOMES --- */}
         <div className={styles.gridRow}>
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
@@ -94,7 +89,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               value={formData.nomeDoRestaurante || ""}
               onChange={handleChange}
               
-              // Acessibilidade
               onMouseEnter={() => safeSpeak("Campo Nome do Restaurante. Clique para editar.")}
               onMouseLeave={stopSpeech}
               onClick={() => safeSpeak("Pode digitar o novo nome do restaurante.")}
@@ -128,7 +122,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               value={formData.nomeDoAnunciante || ""}
               onChange={handleChange}
               
-              // Acessibilidade
               onMouseEnter={() => safeSpeak("Campo Seu Nome. Clique para editar.")}
               onMouseLeave={stopSpeech}
               onClick={() => safeSpeak("Pode digitar seu nome.")}
@@ -137,10 +130,8 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
           </div>
         </div>
 
-        {/* --- BLOCO 2: CARDÁPIO (Já tem voz interna) --- */}
         <Cardapio formData={formData} setFormData={setFormData} />
 
-        {/* --- BLOCO 3: DESCRIÇÃO --- */}
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
             <label 
@@ -169,7 +160,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             value={formData.descricao || ""}
             onChange={handleChange}
             
-            // Acessibilidade
             onMouseEnter={() => safeSpeak("Campo de texto Descrição. Clique para editar.")}
             onMouseLeave={stopSpeech}
             onClick={() => safeSpeak("Pode digitar a descrição do restaurante.")}
@@ -177,10 +167,8 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
           />
         </div>
 
-        {/* --- BLOCO 4: ACESSIBILIDADES (Já tem voz interna) --- */}
         <Acessibilidades formData={formData} setFormData={setFormData} />
 
-        {/* --- BLOCO 5: CONTATO (EMAIL E TELEFONE) --- */}
         <div className={styles.gridRow}>
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
@@ -200,7 +188,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               disabled
               title="Este campo não pode ser editado"
               
-              // Acessibilidade
               onMouseEnter={() => safeSpeak("Este campo de e-mail não pode ser alterado.")}
               onMouseLeave={stopSpeech}
               onFocus={() => handleFocusWithKeyboard("Campo E-mail. Apenas leitura.")}
@@ -235,7 +222,6 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               maxLength={15}
               placeholder="(00) 00000-0000"
               
-              // Acessibilidade
               onMouseEnter={() => safeSpeak("Campo Telefone. Clique para editar.")}
               onMouseLeave={stopSpeech}
               onClick={() => safeSpeak("Pode digitar o novo telefone.")}
@@ -244,21 +230,19 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
           </div>
         </div>
 
-        {/* --- UPLOAD DE NOVA IMAGEM --- */}
+
         <UploadImagem
           onFileSelect={handleFileSelect}
           initialImage={formData.urlFoto || formData.foto || null}
           allowRemove={false}
         />
 
-        {/* --- BLOCO 7: AÇÕES --- */}
         <div className={styles.buttonGroup}>
           <button
             type="button"
             className={styles.cancelButton}
             onClick={onCancel}
             
-            // Acessibilidade
             onMouseEnter={() => safeSpeak("Botão Cancelar")}
             onMouseLeave={stopSpeech}
             onFocus={() => handleFocusWithKeyboard("Botão Cancelar")}
@@ -266,14 +250,12 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             Cancelar
           </button>
           
-          {/* BOTÃO COM A LÓGICA DE DISABLED */}
           <button 
             type="submit" 
             className={styles.saveButton}
             disabled={!podeSalvar}
             title={!podeSalvar ? "Faça alguma alteração para salvar" : "Salvar alterações"}
             
-            // Acessibilidade
             onMouseEnter={() => 
               safeSpeak(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado. Nenhuma alteração detectada.")
             }

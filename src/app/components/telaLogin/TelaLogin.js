@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login } from "../../../lib/api/authService";
 import ModalMensagem from "../../components/modal/ModalMensagem";
-import { useAuth } from "../../context/AuthContext"; // Contexto global
-import { useSpeechSettings } from "../../context/SpeechContext"; // ⬅️ Contexto de Voz
+import { useAuth } from "../../context/AuthContext";
+import { useSpeechSettings } from "../../context/SpeechContext"; 
 
 export default function TelaLogin() {
   const [userType, setUserType] = useState("CLIENT");
@@ -23,21 +23,19 @@ export default function TelaLogin() {
   const { loginSuccess } = useAuth();
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    stopSpeech(); // Para qualquer leitura anterior
+    stopSpeech();
     setLoading(true);
 
     if (!email || !password) {
@@ -69,7 +67,6 @@ export default function TelaLogin() {
 
   return (
     <div className={styles.loginContainer}>
-      {/* LADO ESQUERDO */}
       <div className={styles.loginLeft}>
         <img
           src="https://i.ibb.co/p6nzSB6p/imagem-2025-10-29-224844608.png"
@@ -82,7 +79,6 @@ export default function TelaLogin() {
         />
       </div>
 
-      {/* LADO DIREITO */}
       <div className={styles.loginRight}>
         <div className={styles.loginCard}>
           <Link
@@ -99,13 +95,11 @@ export default function TelaLogin() {
             City<span>Inclui</span>
           </Link>
 
-          {/* Tipo de usuário */}
           <div
             className={styles.userTypeSelector}
             role="radiogroup"
             aria-label="Selecione o tipo de usuário"
           >
-            {/* Opção Cliente */}
             <div className={styles.userTypeOption}>
               <input
                 type="radio"
@@ -127,7 +121,6 @@ export default function TelaLogin() {
               </label>
             </div>
 
-            {/* Opção Restaurante */}
             <div className={styles.userTypeOption}>
               <input
                 type="radio"
@@ -150,7 +143,6 @@ export default function TelaLogin() {
             </div>
           </div>
 
-          {/* Formulário */}
           <form className={styles.loginForm} onSubmit={handleSubmit}>
             <div className={styles.inputGroup}>
               <input
@@ -159,7 +151,6 @@ export default function TelaLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                // Lógica completa de acessibilidade
                 onMouseEnter={() => safeSpeak("Campo de email. Clique para digitar.")}
                 onMouseLeave={stopSpeech}
                 onClick={() => safeSpeak("Pode digitar seu email agora.")}
@@ -173,7 +164,6 @@ export default function TelaLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                // Lógica completa de acessibilidade
                 onMouseEnter={() => safeSpeak("Campo de senha. Clique para digitar.")}
                 onMouseLeave={stopSpeech}
                 onClick={() => safeSpeak("Pode digitar sua senha.")}

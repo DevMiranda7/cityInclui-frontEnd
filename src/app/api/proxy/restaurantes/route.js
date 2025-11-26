@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const SPRING_URL = process.env.SPRING_API_URL;
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
 
 export async function GET() {
   try {

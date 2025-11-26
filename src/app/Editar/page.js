@@ -1,6 +1,5 @@
-// app/editar/page.js (Server Component)
 import { Metadata } from 'next';
-import GerenciadorPerfil from './GerenciadorPerfil'; // Importa o componente cliente
+import GerenciadorPerfil from './GerenciadorPerfil'; 
 
 export const metadata = {
   title: 'Editar Perfil | CityInclui',

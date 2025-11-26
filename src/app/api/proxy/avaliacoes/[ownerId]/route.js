@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const SPRING_URL = process.env.SPRING_API_URL
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
 
 
 export async function GET(request, context) {

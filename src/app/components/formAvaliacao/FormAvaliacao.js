@@ -11,17 +11,15 @@ export default function FormAvaliacao({ onSubmit }) {
   const [hover, setHover] = useState(0);
   const [comentario, setComentario] = useState("");
 
-  // 1. Hooks do Contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup: Para a voz se o componente desmontar
+
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -50,12 +48,11 @@ export default function FormAvaliacao({ onSubmit }) {
         Avaliar Restaurante
       </h2>
 
-      {/* ESTRELAS */}
       <div
         className={styles.starsWrapper}
         role="group"
         aria-label="Seleção de classificação em estrelas"
-        onMouseLeave={stopSpeech} // Para áudio se sair da área das estrelas
+        onMouseLeave={stopSpeech}
       >
         {Array.from({ length: 5 }).map((_, index) => {
           const value = index + 1;
@@ -64,12 +61,10 @@ export default function FormAvaliacao({ onSubmit }) {
               key={value}
               whileHover={{ scale: 1.2 }}
               
-              // Acessibilidade e Eventos
               role="button"
               aria-label={`Classificar com ${value} estrelas`}
               tabIndex={0}
-              
-              // Mouse
+
               onMouseEnter={() => {
                 setHover(value);
                 safeSpeak(`${value} estrelas`);
@@ -80,7 +75,6 @@ export default function FormAvaliacao({ onSubmit }) {
               }}
               onClick={() => handleStarClick(value)}
               
-              // Teclado (Foco e Seleção)
               onFocus={() => {
                 setHover(value);
                 handleFocusWithKeyboard(`Classificar com ${value} estrelas`);
@@ -104,7 +98,7 @@ export default function FormAvaliacao({ onSubmit }) {
         })}
       </div>
 
-      {/* CAMPO DE COMENTÁRIO */}
+
       <div className={styles.textAreaWrapper}>
         <label
           className={styles.textAreaLabel}
@@ -119,7 +113,6 @@ export default function FormAvaliacao({ onSubmit }) {
           onChange={(e) => setComentario(e.target.value)}
           className={styles.textArea}
           
-          // Lógica de Voz Padronizada (Input/Textarea)
           onMouseEnter={() => safeSpeak("Campo de Comentário. Clique para digitar.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Pode digitar sua opinião agora.")}
@@ -129,7 +122,6 @@ export default function FormAvaliacao({ onSubmit }) {
         />
       </div>
 
-      {/* BOTÃO */}
       <button
         type="submit"
         className={styles.btnSubmit}

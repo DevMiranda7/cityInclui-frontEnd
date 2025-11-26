@@ -1,20 +1,20 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { getProfile } from "@/src/lib/api/ownerService"; // Importe o service
+import { getProfile } from "@/src/lib/api/ownerService";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [userType, setUserType] = useState(null);
-  const [userId, setUserId] = useState(null); // ✅ Novo estado global para ID
+  const [userId, setUserId] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const loginSuccess = (newToken) => {
     setToken(newToken);
     localStorage.setItem("auth_token", newToken);
-    processToken(newToken); // Extraímos a lógica para função
+    processToken(newToken);
   };
 
   const processToken = async (tokenStr) => {
@@ -28,11 +28,9 @@ export function AuthProvider({ children }) {
       
       setUserType(type);
 
-      // ✅ LÓGICA CENTRALIZADA: Se for Owner, buscamos o ID aqui
       if (type === "OWNER") {
         try {
-          // Verifica se já temos o ID para não buscar a toa
-          const profile = await getProfile(); // Seu fetch existente
+          const profile = await getProfile();
           if (profile?.id) setUserId(profile.id);
         } catch (err) {
           console.error("Erro ao buscar ID no AuthContext", err);
@@ -48,7 +46,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setToken(null);
     setUserType(null);
-    setUserId(null); // Limpa ID
+    setUserId(null);
     localStorage.removeItem("auth_token");
   };
 
@@ -64,7 +62,6 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      // ✅ Expomos userId para toda a aplicação
       value={{ token, userType, userId, loadingUser, loginSuccess, logout }}
     >
       {children}

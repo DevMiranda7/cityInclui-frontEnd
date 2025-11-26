@@ -1,8 +1,7 @@
-/* Container principal do formulário */
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* O MESTRE DO ESPAÇAMENTO: Controla a distância vertical entre tudo */
+  gap: 2rem; 
   width: 100%;
   max-width: 48rem;
   margin: 0 auto;
@@ -13,23 +12,19 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Linhas de inputs (Lado a lado) */
 .gridRow {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
-  width: 100%; /* Garante que a linha ocupe tudo */
+  width: 100%; 
 }
 
-/* Cada grupo de label + input */
 .inputGroup {
   display: flex;
   flex-direction: column;
   flex: 1 1 250px;
-  /* REMOVIDO: margin-bottom: 1.5rem; -> Deixe o gap do pai controlar isso */
 }
 
-/* Container do label + botão falar */
 .labelContainer {
   display: flex;
   justify-content: space-between;
@@ -37,43 +32,39 @@
   margin-bottom: 0.5rem;
 }
 
-/* Labels */
 .label {
-  font-weight: 600; /* Um pouco mais de peso para hierarquia */
+  font-weight: 600;
   color: #374151;
   font-size: 0.95rem;
 }
 
-/* Inputs e textarea */
 .inputField {
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   border: 1px solid #d1d5db;
   transition: all 0.2s ease;
   font-size: 1rem;
-  width: 100%; /* Garante que preencha o container */
+  width: 100%; 
 }
 
 .inputField:focus {
-  border-color: #2563eb; /* Exemplo de cor de foco */
+  border-color: #2563eb;
   outline: none;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* Campo de Email (Não editável) */
 .nonEditable {
   background-color: #f3f4f6;
   color: #6b7280;
   cursor: not-allowed;
-  /* REMOVIDO: margin-bottom extra que estava desalinhando com o telefone */
+
 }
 
 .textareaField {
   resize: vertical;
-  min-height: 120px; /* Altura mínima melhor para descrição */
+  min-height: 120px;
 }
 
-/* Preview da imagem */
 .imagePreviewContainer {
   display: flex;
   flex-direction: column;
@@ -82,24 +73,22 @@
 
 .previewImage {
   width: 100%;
-  max-width: 300px; /* Limita largura mas mantém proporção */
+  max-width: 300px;
   height: 200px;
   object-fit: cover;
   border-radius: 0.75rem;
   border: 1px solid #e5e7eb;
 }
 
-/* Botões */
 .buttonGroup {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  margin-top: 1rem; /* Um respiro extra antes dos botões */
+  margin-top: 1rem; 
   padding-top: 2rem;
-  border-top: 1px solid #f3f4f6; /* Uma linha sutil para separar as ações */
+  border-top: 1px solid #f3f4f6; 
 }
 
-/* Estilos para os botões (sugestão visual para combinar com o layout) */
 .saveButton {
   padding: 0.75rem 1.5rem;
   background-color: #2563eb;
@@ -120,14 +109,12 @@
   cursor: pointer;
 }
 
-/* Adicione isso ao final do seu arquivo CSS */
-
 .saveButton:disabled {
-  background-color: #9ca3af; /* Um cinza para indicar inativo */
+  background-color: #9ca3af; 
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .saveButton:disabled:hover {
-  background-color: #9ca3af; /* Remove o efeito de hover */
+  background-color: #9ca3af; 
 }

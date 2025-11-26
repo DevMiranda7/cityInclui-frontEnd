@@ -13,22 +13,18 @@ export default function UploadImagem({ onFileSelect, initialImage = null, allowR
   const [erro, setErro] = useState("");
   const inputRef = useRef(null);
   
-  // 1. Hooks do Contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // Mantém a imagem inicial
   useEffect(() => {
     if (initialImage) {
       setFoto(initialImage);
@@ -90,7 +86,6 @@ export default function UploadImagem({ onFileSelect, initialImage = null, allowR
 
       <div
         className={styles.uploadBox}
-        // Voice feedback no container também, caso o mouse passe pelas bordas
         onMouseEnter={() => safeSpeak("Área de upload. Clique para escolher uma foto.")}
         onMouseLeave={stopSpeech}
       >
@@ -102,7 +97,6 @@ export default function UploadImagem({ onFileSelect, initialImage = null, allowR
           onChange={handleChange}
           className={styles.inputField}
           
-          // Eventos de Acessibilidade
           onMouseEnter={() => safeSpeak("Campo de envio de foto. Clique para selecionar um arquivo.")}
           onMouseLeave={stopSpeech}
           onClick={() => safeSpeak("Abrindo seletor de arquivos.")}
@@ -148,7 +142,6 @@ export default function UploadImagem({ onFileSelect, initialImage = null, allowR
               className={styles.removeButton}
               aria-label="Remover imagem selecionada"
               
-              // Eventos de Acessibilidade
               onMouseEnter={() => safeSpeak("Botão Remover imagem selecionada")}
               onMouseLeave={stopSpeech}
               onFocus={() => handleFocusWithKeyboard("Botão Remover imagem selecionada")}

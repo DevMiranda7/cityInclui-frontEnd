@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-// URL base do Spring Boot (ajuste se sua porta for diferente)
-const SPRING_URL = process.env.SPRING_API_URL;
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
 
 export async function PUT(request) {
   try {
@@ -21,14 +20,13 @@ export async function PUT(request) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Passa o token para o @AuthenticationPrincipal funcionar
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
 
     const data = await response.json();
 
-    // 4. Retorna a resposta do Java para o Front-end
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }

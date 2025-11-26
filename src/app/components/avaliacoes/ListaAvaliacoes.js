@@ -25,14 +25,12 @@ export default function ListaAvaliacoes({ avaliacoes }) {
   return (
     <div className={styles.listaContainer}>
       {avaliacoes.map((review, index) => {
-        // Formata a data para leitura e exibição
         const dataFormatada = review.data
           ? new Date(
               review.data.split("/").reverse().join("-")
             ).toLocaleDateString()
           : "";
 
-        // Monta o texto completo para a voz
         const textoVoz = `
             Avaliação de ${review.nomeCliente || "Cliente CityInclui"}.
             Nota ${review.nota} estrelas.
@@ -44,8 +42,8 @@ export default function ListaAvaliacoes({ avaliacoes }) {
           <div
             key={review.id || index}
             className={styles.reviewItem}
-            tabIndex={0} // Torna o card focável pelo teclado
-            aria-label={`Avaliação de ${review.nomeCliente || "Cliente"}`} // Acessibilidade nativa
+            tabIndex={0} 
+            aria-label={`Avaliação de ${review.nomeCliente || "Cliente"}`} 
             onMouseEnter={() => safeSpeak(textoVoz)}
             onFocus={() => handleFocusWithKeyboard(textoVoz)}
           >

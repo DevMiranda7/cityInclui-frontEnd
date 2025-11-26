@@ -17,14 +17,12 @@ const SearchBar = () => {
   const [showFilter, setShowFilter] = useState(false);
   const router = useRouter();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
@@ -44,7 +42,6 @@ const SearchBar = () => {
     stopSpeech();
     safeSpeak(`Filtro aplicado: ${selectedFood}. Buscando...`);
     setShowFilter(false);
-    // redirecionamento imediato conforme solicitado
     router.push(`/resultados?q=${encodeURIComponent(selectedFood)}`);
   }
 
@@ -88,7 +85,6 @@ const SearchBar = () => {
             onChange={handleInputChange}
             className={styles.searchInput}
             
-            // Lógica de Acessibilidade no Input
             onMouseEnter={() => safeSpeak("Campo de busca. Clique para digitar.")}
             onMouseLeave={stopSpeech}
             onClick={() => safeSpeak("Pode digitar o nome do restaurante.")}
@@ -104,7 +100,6 @@ const SearchBar = () => {
               setShowFilter(!showFilter);
             }}
             
-            // Lógica de Acessibilidade no Botão Filtro
             onMouseEnter={() => safeSpeak("Botão de filtros. Clique para selecionar categorias.")}
             onMouseLeave={stopSpeech}
             onFocus={() => handleFocusWithKeyboard("Botão de filtros. Selecione uma categoria.")}
@@ -125,7 +120,6 @@ const SearchBar = () => {
         <button
           type="submit"
           className={styles.searchButton}
-          // Lógica de Acessibilidade no Botão Buscar
           onMouseEnter={() => safeSpeak("Botão Buscar. Pressione Enter para pesquisar.")}
           onMouseLeave={stopSpeech}
           onFocus={() => handleFocusWithKeyboard("Botão Buscar.")}

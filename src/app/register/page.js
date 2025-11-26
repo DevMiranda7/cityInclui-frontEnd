@@ -85,7 +85,6 @@ export default function RegisterPage() {
 
       abrirModal("sucesso", "Cadastro realizado com sucesso!");
 
-      // 🔥 REDIRECIONAMENTO PARA LOGIN APÓS SUCESSO
       setTimeout(() => {
         router.push("/login");
       }, 1500);

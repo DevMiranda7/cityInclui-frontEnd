@@ -6,14 +6,12 @@ import { useSpeechSettings } from "../../context/SpeechContext";
 export default function ExibirCardapio({ culinaria }) {
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // Função auxiliar para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // Cleanup: Para a voz se o componente desmontar (troca de página, etc)
   useEffect(() => {
     return () => stopSpeech();
   }, []);

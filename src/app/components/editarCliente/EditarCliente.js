@@ -6,22 +6,19 @@ import { useSpeechSettings } from "../../context/SpeechContext";
 export default function EditarCliente({ initialData, onSave, onCancel }) {
   const [formData, setFormData] = useState({});
   
-  // 1. Hooks do Contexto
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
-  // 2. Função para parar o áudio imediatamente
   const stopSpeech = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
   };
 
-  // 3. Cleanup: Para a voz se o componente desmontar
   useEffect(() => {
     return () => stopSpeech();
   }, []);
 
-  // Função auxiliar para aplicar a máscara de telefone
+
   const mascaraTelefone = (valor) => {
     if (!valor) return "";
     let v = valor.replace(/\D/g, "");
@@ -56,7 +53,7 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
     onSave(formData);
   };
 
-  // ✅ LÓGICA DE BLOQUEIO: Verifica se houve mudança real
+
   const temAlteracoes = () => {
     if (!initialData || !formData) return false;
     const telefoneAtual = (formData.telefone || "").replace(/\D/g, "");
@@ -75,7 +72,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div role="group" aria-label="Edição de perfil de cliente">
         
-        {/* --- NOME --- */}
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
             <label
@@ -102,7 +98,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
             value={formData.nome || ""}
             onChange={handleChange}
             
-            // Eventos de Acessibilidade
             onMouseEnter={() => safeSpeak("Campo Nome Completo. Clique para editar.")}
             onMouseLeave={stopSpeech}
             onClick={() => safeSpeak("Pode digitar o novo nome.")}
@@ -110,7 +105,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
           />
         </div>
 
-        {/* --- EMAIL (Bloqueado) --- */}
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
             <label 
@@ -134,7 +128,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
           />
         </div>
 
-        {/* --- TELEFONE --- */}
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
             <label 
@@ -163,7 +156,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
             maxLength={15}
             placeholder="(00) 00000-0000"
             
-            // Eventos de Acessibilidade
             onMouseEnter={() => safeSpeak("Campo Telefone. Clique para editar.")}
             onMouseLeave={stopSpeech}
             onClick={() => safeSpeak("Pode digitar o novo telefone com DDD.")}
@@ -171,7 +163,6 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
           />
         </div>
 
-        {/* --- BOTÕES --- */}
         <div className={styles.buttonGroup}>
           <button
             type="button"
@@ -184,14 +175,12 @@ export default function EditarCliente({ initialData, onSave, onCancel }) {
             Cancelar
           </button>
 
-          {/* Botão Salvar */}
           <button
             type="submit"
             className={styles.saveButton}
             disabled={!podeSalvar}
             title={!podeSalvar ? "Faça alguma alteração para salvar" : "Salvar alterações"}
             
-            // Acessibilidade
             onMouseEnter={() => 
               safeSpeak(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado. Nenhuma alteração detectada.")
             }
