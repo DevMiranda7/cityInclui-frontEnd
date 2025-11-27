@@ -9,7 +9,7 @@ import { useSpeechSettings } from "../context/SpeechContext";
 
 export default function GerenciadorPerfil() {
   const { userType, loadingUser } = useAuth();
-  
+
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
   const stopSpeech = () => {
@@ -46,15 +46,20 @@ export default function GerenciadorPerfil() {
       >
         {msgErro}
       </p>
-      
-    
+
       <div style={{ marginTop: "20px" }}>
-        <a 
+        <a
           href="/login"
-          style={{ color: "#007bff", textDecoration: "underline", cursor: "pointer" }}
+          style={{
+            color: "#007bff",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
           onMouseEnter={() => safeSpeak("Link. Ir para página de login.")}
           onMouseLeave={stopSpeech}
-          onFocus={() => handleFocusWithKeyboard("Link. Ir para página de login.")}
+          onFocus={() =>
+            handleFocusWithKeyboard("Link. Ir para página de login.")
+          }
         >
           Ir para Login
         </a>
