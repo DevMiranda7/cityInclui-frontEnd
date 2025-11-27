@@ -1,26 +1,52 @@
 "use client";
+
+import React, { useEffect } from "react";
 import { useSpeechSettings } from "../context/SpeechContext";
 import { Volume2, VolumeX } from "lucide-react";
 
 export default function MuteButton() {
-  const { speechEnabled, toggleSpeech, speakText } = useSpeechSettings();
+  const { speechEnabled, toggleSpeech, safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
+  const enabled = speechEnabled === true;
+  const label = enabled ? "Desativar leitura por voz" : "Ativar leitura por voz";
 
   const handle = () => {
-    const willEnable = !speechEnabled;
+    stopSpeech(); 
+  
+    const willEnable = !enabled;
     toggleSpeech();
- 
+
     if (willEnable) {
-      setTimeout(() => speakText("Leitura de voz ativada"), 100);
+      setTimeout(() => safeSpeak("Leitura de voz ativada."), 120);
     }
   };
 
   return (
     <button
       onClick={handle}
-      aria-pressed={!speechEnabled}
-      title={speechEnabled ? "Desativar leitura de voz" : "Ativar leitura de voz"}
+      
+      aria-pressed={enabled}
+      aria-label={label}
+      title={label}
+      
+      style={{ background: "transparent", border: "none", cursor: "pointer" }}
+      
+     
+      onMouseEnter={() => safeSpeak(label)}
+      onMouseLeave={stopSpeech}
+      onFocus={() => handleFocusWithKeyboard(label)}
     >
-      {speechEnabled ? <Volume2 /> : <VolumeX />}
+      {enabled ? <Volume2 /> : <VolumeX />}
     </button>
   );
 }

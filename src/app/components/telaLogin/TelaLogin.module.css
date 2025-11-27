@@ -1,0 +1,182 @@
+.loginContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  gap: 20%;
+  padding: 40px 20px;
+}
+
+.loginLeft {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 380px;
+}
+
+.phoneImage {
+  width: 100%;
+  max-width: 380px;
+}
+
+.loginRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 350px;
+}
+
+.loginCard {
+  background: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 1px;
+  width: 100%;
+  max-width: 350px;
+  padding: 40px 40px 30px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  display: block;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.logo span {
+  color: #667eea;
+}
+
+.userTypeSelector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.userTypeOption {
+  position: relative;
+}
+
+.userTypeOption input {
+  display: none;
+}
+
+.userTypeOption label {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid #d5d5d5;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.userTypeOption label:hover {
+  border-color: #b9b9ff;
+  background: #f4f4ff;
+}
+
+.userTypeOption input:checked + label {
+  background: linear-gradient(90deg, #667eea, #6d48e8);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+  transform: translateY(-1px);
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  color: #333;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.loginButton {
+  width: 100%;
+  background: linear-gradient(90deg, #667eea, #6d48e8);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.loginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.forgotPassword {
+  margin-top: 15px;
+}
+
+.forgotLink {
+  color: #667eea;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.registerCard {
+  background: white;
+  border: 1px solid #dbdbdb;
+  width: 100%;
+  max-width: 350px;
+  padding: 20px;
+  text-align: center;
+}
+
+.registerLink {
+  color: #666;
+}
+
+.registerLink a {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .loginContainer {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .loginLeft {
+    justify-content: center;
+    max-width: 300px;
+  }
+
+  .phoneImage {
+    max-width: 300px;
+  }
+}

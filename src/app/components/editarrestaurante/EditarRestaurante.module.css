@@ -1,0 +1,120 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; 
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.gridRow {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  width: 100%; 
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 250px;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.inputField {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  width: 100%; 
+}
+
+.inputField:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.nonEditable {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+
+}
+
+.textareaField {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.imagePreviewContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.previewImage {
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem; 
+  padding-top: 2rem;
+  border-top: 1px solid #f3f4f6; 
+}
+
+.saveButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancelButton {
+  padding: 0.75rem 1.5rem;
+  background-color: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  background-color: #9ca3af; 
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.saveButton:disabled:hover {
+  background-color: #9ca3af; 
+}

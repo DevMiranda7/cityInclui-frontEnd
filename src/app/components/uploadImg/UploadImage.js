@@ -1,43 +1,75 @@
-import React, { useState, useRef } from "react";
-import { Upload, X } from "lucide-react";
+"use client";
+import React, { useState, useRef, useEffect } from "react";
+import { Upload, X, AlertCircle } from "lucide-react";
 import styles from "./UploadImage.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
-export default function UploadImagem({onFileSelect}) {
+const MAX_FILE_SIZE_MB = 10;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
+
+export default function UploadImagem({ onFileSelect, initialImage = null, allowRemove = true }) {
   const [foto, setFoto] = useState(null);
   const [erro, setErro] = useState("");
   const inputRef = useRef(null);
+  
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
+
+  useEffect(() => {
+    if (initialImage) {
+      setFoto(initialImage);
+    }
+  }, [initialImage]);
 
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      setErro("Apenas imagens PNG ou JPEG são permitidas.");
-      setFoto(null);
-      onFileSelect?.(null)
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      const mensagemErro = "Apenas imagens PNG, JPEG ou WebP são permitidas.";
+      setErro(mensagemErro);
+      setFoto(initialImage || null);
+      onFileSelect?.(null);
+      safeSpeak(`Erro: ${mensagemErro}`);
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      const mensagemErro = `A imagem é muito grande. O limite é ${MAX_FILE_SIZE_MB}MB.`;
+      setErro(mensagemErro);
+      setFoto(initialImage || null);
+      onFileSelect?.(null);
+      safeSpeak(`Erro: ${mensagemErro}`);
       return;
     }
 
     setErro("");
-    setFoto(URL.createObjectURL(file));
+    const previewUrl = URL.createObjectURL(file);
+    setFoto(previewUrl);
     onFileSelect?.(file);
-
-    speakText("Você selecionou uma imagem");
+    safeSpeak("Você selecionou uma imagem com sucesso.");
   };
 
   const handleRemoverImagem = () => {
-    if (foto) {
+    if (!allowRemove) return;
+
+    if (foto && foto !== initialImage) {
       URL.revokeObjectURL(foto);
-      setFoto(null);
-      onFileSelect?.(null);
-
-      speakText("Você apagou a imagem");
     }
-
-    if (inputRef.current) {
-      inputRef.current.value = null;
-    }
+    setFoto(null);
+    onFileSelect?.(null);
+    if (inputRef.current) inputRef.current.value = null;
+    safeSpeak("Você removeu a imagem.");
   };
 
   return (
@@ -45,47 +77,79 @@ export default function UploadImagem({onFileSelect}) {
       <label
         htmlFor="fotoRestaurante"
         className={styles.label}
-        onClick={() => speakText("Envie uma imagem")}
-        onMouseEnter={() => speakText("Envie uma imagem")}
-        onFocus={() => handleFocusWithKeyboard("Envie uma imagem")}
+        onMouseEnter={() => safeSpeak(`Envie uma foto. Limite de ${MAX_FILE_SIZE_MB} megas.`)}
+        onMouseLeave={stopSpeech}
+        onFocus={() => handleFocusWithKeyboard(`Envie uma foto. Limite de ${MAX_FILE_SIZE_MB} megas.`)}
       >
-        Foto do Restaurante
+        Foto do Restaurante (Máx: {MAX_FILE_SIZE_MB}MB)
       </label>
 
-      <div className={styles.uploadBox}>
+      <div
+        className={styles.uploadBox}
+        onMouseEnter={() => safeSpeak("Área de upload. Clique para escolher uma foto.")}
+        onMouseLeave={stopSpeech}
+      >
         <input
           id="fotoRestaurante"
           ref={inputRef}
           type="file"
-          accept="image/png, image/jpeg"
+          accept={ACCEPTED_TYPES.join(",")}
           onChange={handleChange}
           className={styles.inputField}
-          onFocus={() => handleFocusWithKeyboard("Envie uma imagem")}
-          onClick={() => speakText("Envie uma imagem")}
-          onMouseEnter={() => speakText("Envie uma imagem")}
+          
+          onMouseEnter={() => safeSpeak("Campo de envio de foto. Clique para selecionar um arquivo.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Abrindo seletor de arquivos.")}
+          onFocus={() => handleFocusWithKeyboard("Campo de envio de foto. Pressione Enter para selecionar.")}
         />
+        
         <div className={styles.uploadContent}>
           <Upload className={styles.uploadIcon} />
-          <span>Clique para escolher ou arraste uma imagem</span>
+          <span>Clique para substituir a imagem</span>
         </div>
       </div>
 
-      {erro && <p className={styles.errorMessage}>{erro}</p>}
+      {erro && (
+        <p 
+          className={styles.errorMessage} 
+          role="alert"
+          tabIndex={0}
+          onMouseEnter={() => safeSpeak(`Erro: ${erro}`)}
+          onMouseLeave={stopSpeech}
+          onFocus={() => handleFocusWithKeyboard(`Erro: ${erro}`)}
+        >
+          <AlertCircle size={16} style={{ marginRight: "8px" }} />
+          {erro}
+        </p>
+      )}
 
       {foto && (
         <div className={styles.previewContainer}>
           <img
-            src={foto}
+            src={foto || undefined}
             alt="Prévia da foto do restaurante"
             className={styles.previewImage}
+            tabIndex={0}
+            onMouseEnter={() => safeSpeak("Prévia da imagem selecionada")}
+            onMouseLeave={stopSpeech}
+            onFocus={() => handleFocusWithKeyboard("Prévia da imagem selecionada")}
           />
-          <button
-            type="button"
-            onClick={handleRemoverImagem}
-            className={styles.removeButton}
-          >
-            <X size={16} /> Remover
-          </button>
+          
+          {allowRemove && (
+            <button
+              type="button"
+              onClick={handleRemoverImagem}
+              className={styles.removeButton}
+              aria-label="Remover imagem selecionada"
+              
+              onMouseEnter={() => safeSpeak("Botão Remover imagem selecionada")}
+              onMouseLeave={stopSpeech}
+              onFocus={() => handleFocusWithKeyboard("Botão Remover imagem selecionada")}
+            >
+              <X size={16} /> Remover
+            </button>
+          )}
+          
         </div>
       )}
     </div>

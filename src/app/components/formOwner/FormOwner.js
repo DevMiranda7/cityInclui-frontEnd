@@ -1,12 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./FormOwner.module.css";
 import UploadImagem from "../uploadImg/UploadImage";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 import Cardapio from "../cardapio/Cardapio";
+import Acessibilidades from "../accessibility/Acessibilidades";
 
 export default function FormOwner({ formData, setFormData, setFoto }) {
   const [telefone, setTelefone] = useState("");
+  
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  useEffect(() => {
+    return () => stopSpeech();
+  }, []);
 
   const handleTelefoneChange = (e) => {
     const onlyNums = e.target.value.replace(/\D/g, "");
@@ -30,26 +43,15 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           <label
             htmlFor="nomeDoRestaurante"
             className={styles.label}
-            onClick={() =>
-              speakText("Nome do restaurante. Digite o nome do seu restaurante")
-            }
-            onMouseEnter={() =>
-              speakText("Nome do restaurante. Digite o nome do seu restaurante")
-            }
-            onFocus={() =>
-              handleFocusWithKeyboard(
-                "Nome do restaurante. Digite o nome do seu restaurante"
-              )
-            }
+            onMouseEnter={() => safeSpeak("Rótulo Nome do Restaurante")}
+            onMouseLeave={stopSpeech}
           >
             Nome do Restaurante
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() =>
-              speakText("Nome do restaurante. Digite o nome do seu restaurante")
-            }
+            onClick={() => safeSpeak("Nome do restaurante. Digite o nome do seu restaurante")}
             aria-label="Ouvir descrição do campo Nome do Restaurante"
           >
             🗣️
@@ -62,14 +64,11 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           value={formData.nomeDoRestaurante || ""}
           onChange={handleChange}
-          onFocus={() =>
-            handleFocusWithKeyboard(
-              "Nome do restaurante. Digite o nome do seu restaurante"
-            )
-          }
-          onMouseEnter={() =>
-            speakText("Nome do restaurante. Digite o nome do seu restaurante")
-          }
+          
+          onMouseEnter={() => safeSpeak("Campo Nome do Restaurante. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar o nome do restaurante.")}
+          onFocus={() => handleFocusWithKeyboard("Campo Nome do Restaurante.")}
         />
       </div>
 
@@ -78,32 +77,15 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           <label
             htmlFor="nomeDoAnunciante"
             className={styles.label}
-            onClick={() =>
-              speakText(
-                "Seu nome. Digite o nome do responsável pelo restaurante"
-              )
-            }
-            onMouseEnter={() =>
-              speakText(
-                "Seu nome. Digite o nome do responsável pelo restaurante"
-              )
-            }
-            onFocus={() =>
-              handleFocusWithKeyboard(
-                "Seu nome. Digite o nome do responsável pelo restaurante"
-              )
-            }
+            onMouseEnter={() => safeSpeak("Rótulo Seu Nome (Responsável)")}
+            onMouseLeave={stopSpeech}
           >
             Seu Nome (Responsável)
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() =>
-              speakText(
-                "Seu nome. Digite o nome do responsável pelo restaurante"
-              )
-            }
+            onClick={() => safeSpeak("Seu nome. Digite o nome do responsável pelo restaurante")}
             aria-label="Ouvir descrição do campo Nome do Anunciante"
           >
             🗣️
@@ -116,14 +98,11 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           value={formData.nomeDoAnunciante || ""}
           onChange={handleChange}
-          onFocus={() =>
-            handleFocusWithKeyboard(
-              "Seu nome. Digite o nome do responsável pelo restaurante"
-            )
-          }
-          onMouseEnter={() =>
-            speakText("Seu nome. Digite o nome do responsável pelo restaurante")
-          }
+          
+          onMouseEnter={() => safeSpeak("Campo Nome do Responsável. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar seu nome completo.")}
+          onFocus={() => handleFocusWithKeyboard("Campo Nome do Responsável.")}
         />
       </div>
 
@@ -132,28 +111,55 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
       <div className={styles.inputGroup}>
         <div className={styles.labelContainer}>
           <label
+            htmlFor="descricao"
+            className={styles.label}
+            onMouseEnter={() => safeSpeak("Rótulo Descrição do Restaurante")}
+            onMouseLeave={stopSpeech}
+          >
+            Descrição do Restaurante (100-500 caracteres)
+          </label>
+          <button
+            type="button"
+            className={styles.speakButton}
+            onClick={() => safeSpeak("Descrição do Restaurante. Descreva seu restaurante e os recursos de acessibilidade. Mínimo 100 caracteres.")}
+            aria-label="Ouvir descrição do campo Descrição do Restaurante"
+          >
+            🗣️
+          </button>
+        </div>
+        <textarea
+          id="descricao"
+          placeholder="Descreva seu restaurante, focando nos detalhes de acessibilidade (mínimo 100 caracteres)"
+          className={styles.inputField}
+          rows="5"
+          minLength="100"
+          maxLength="500"
+          value={formData.descricao || ""}
+          onChange={handleChange}
+          
+          onMouseEnter={() => safeSpeak("Campo de texto Descrição. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar a descrição do restaurante.")}
+          onFocus={() => handleFocusWithKeyboard("Campo de texto Descrição. Mínimo 100 caracteres.")}
+        />
+      </div>
+
+      <Acessibilidades formData={formData} setFormData={setFormData} />
+
+      <div className={styles.inputGroup}>
+        <div className={styles.labelContainer}>
+          <label
             htmlFor="email"
             className={styles.label}
-            onClick={() =>
-              speakText("E-mail de contato. Digite seu melhor e-mail")
-            }
-            onMouseEnter={() =>
-              speakText("E-mail de contato. Digite seu melhor e-mail")
-            }
-            onFocus={() =>
-              handleFocusWithKeyboard(
-                "E-mail de contato. Digite seu melhor e-mail"
-              )
-            }
+            onMouseEnter={() => safeSpeak("Rótulo E-mail de Contato")}
+            onMouseLeave={stopSpeech}
           >
             E-mail de Contato
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() =>
-              speakText("E-mail de contato. Digite seu melhor e-mail")
-            }
+            onClick={() => safeSpeak("E-mail de contato. Digite seu melhor e-mail")}
             aria-label="Ouvir descrição do campo E-mail de Contato"
           >
             🗣️
@@ -166,14 +172,11 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           value={formData.email || ""}
           onChange={handleChange}
-          onFocus={() =>
-            handleFocusWithKeyboard(
-              "E-mail de contato. Digite seu melhor e-mail"
-            )
-          }
-          onMouseEnter={() =>
-            speakText("E-mail de contato. Digite seu melhor e-mail")
-          }
+          
+          onMouseEnter={() => safeSpeak("Campo E-mail de contato. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar o e-mail de contato.")}
+          onFocus={() => handleFocusWithKeyboard("Campo E-mail de contato.")}
         />
       </div>
 
@@ -182,20 +185,15 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           <label
             htmlFor="telefone"
             className={styles.label}
-            onClick={() => speakText("Telefone. Digite seu telefone com DDD")}
-            onMouseEnter={() =>
-              speakText("Telefone. Digite seu telefone com DDD")
-            }
-            onFocus={() =>
-              handleFocusWithKeyboard("Telefone. Digite seu telefone com DDD")
-            }
+            onMouseEnter={() => safeSpeak("Rótulo Telefone")}
+            onMouseLeave={stopSpeech}
           >
             Telefone
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() => speakText("Telefone. Digite seu telefone com DDD")}
+            onClick={() => safeSpeak("Telefone. Digite seu telefone com DDD")}
             aria-label="Ouvir descrição do campo Telefone"
           >
             🗣️
@@ -209,12 +207,11 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           onChange={handleTelefoneChange}
           className={styles.inputField}
           maxLength={11}
-          onFocus={() =>
-            handleFocusWithKeyboard("Telefone. Digite seu telefone com DDD")
-          }
-          onMouseEnter={() =>
-            speakText("Telefone. Digite seu telefone com DDD")
-          }
+          
+          onMouseEnter={() => safeSpeak("Campo Telefone. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar o telefone com DDD.")}
+          onFocus={() => handleFocusWithKeyboard("Campo Telefone.")}
         />
       </div>
 
@@ -223,18 +220,15 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           <label
             htmlFor="senha"
             className={styles.label}
-            onClick={() => speakText("Senha. Crie uma senha forte")}
-            onMouseEnter={() => speakText("Senha. Crie uma senha forte")}
-            onFocus={() =>
-              handleFocusWithKeyboard("Senha. Crie uma senha forte")
-            }
+            onMouseEnter={() => safeSpeak("Rótulo Senha")}
+            onMouseLeave={stopSpeech}
           >
             Senha
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() => speakText("Senha. Crie uma senha forte")}
+            onClick={() => safeSpeak("Senha. Crie uma senha forte")}
             aria-label="Ouvir descrição do campo Senha"
           >
             🗣️
@@ -247,8 +241,11 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           value={formData.senha || ""}
           onChange={handleChange}
-          onFocus={() => handleFocusWithKeyboard("Senha. Crie uma senha forte")}
-          onMouseEnter={() => speakText("Senha. Crie uma senha forte")}
+          
+          onMouseEnter={() => safeSpeak("Campo Senha. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Pode digitar sua senha.")}
+          onFocus={() => handleFocusWithKeyboard("Campo Senha.")}
         />
       </div>
 
@@ -257,26 +254,15 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           <label
             htmlFor="confirmarSenhaAnunciante"
             className={styles.label}
-            onClick={() =>
-              speakText("Confirmar senha. Repita a senha para confirmar")
-            }
-            onMouseEnter={() =>
-              speakText("Confirmar senha. Repita a senha para confirmar")
-            }
-            onFocus={() =>
-              handleFocusWithKeyboard(
-                "Confirmar senha. Repita a senha para confirmar"
-              )
-            }
+            onMouseEnter={() => safeSpeak("Rótulo Confirmar Senha")}
+            onMouseLeave={stopSpeech}
           >
             Confirmar Senha
           </label>
           <button
             type="button"
             className={styles.speakButton}
-            onClick={() =>
-              speakText("Confirmar senha. Repita a senha para confirmar")
-            }
+            onClick={() => safeSpeak("Confirmar senha. Repita a senha para confirmar")}
             aria-label="Ouvir descrição do campo Confirmar Senha"
           >
             🗣️
@@ -289,16 +275,14 @@ export default function FormOwner({ formData, setFormData, setFoto }) {
           className={styles.inputField}
           value={formData.confirmarSenhaAnunciante || ""}
           onChange={handleChange}
-          onFocus={() =>
-            handleFocusWithKeyboard(
-              "Confirmar senha. Repita a senha para confirmar"
-            )
-          }
-          onMouseEnter={() =>
-            speakText("Confirmar senha. Repita a senha para confirmar")
-          }
+          
+          onMouseEnter={() => safeSpeak("Campo Confirmar Senha. Clique para digitar.")}
+          onMouseLeave={stopSpeech}
+          onClick={() => safeSpeak("Repita a senha digitada anteriormente.")}
+          onFocus={() => handleFocusWithKeyboard("Campo Confirmar Senha.")}
         />
       </div>
+
       <UploadImagem onFileSelect={setFoto} />
     </div>
   );

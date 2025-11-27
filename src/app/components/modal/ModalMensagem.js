@@ -1,14 +1,39 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ModalMensagem.module.css";
-import { speakText, handleFocusWithKeyboard } from "../../utils/useSpeech";
+import { useSpeechSettings } from "../../context/SpeechContext";
 
-export default function ModalMensagem({ isOpen, onClose, type = "erro", message }) {
-  if (!isOpen) return null;
+export default function ModalMensagem({
+  isOpen,
+  onClose,
+  type = "erro",
+  message,
+}) {
+  const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
+
+  const stopSpeech = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
 
   const titulo = type === "erro" ? "Erro" : "Sucesso";
   const cor = type === "erro" ? styles.erro : styles.sucesso;
+
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        safeSpeak(`Alerta: ${titulo}. ${message}`);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+    
+    return () => stopSpeech();
+  }, [isOpen, titulo, message, safeSpeak]);
+
+  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
@@ -18,6 +43,7 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={onClose}
         >
           <motion.div
             className={`${styles.modal} ${cor}`}
@@ -27,10 +53,12 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
             role="alertdialog"
             aria-labelledby="modal-titulo"
             aria-describedby="modal-mensagem"
+            onClick={(e) => e.stopPropagation()} 
           >
             <h3
               id="modal-titulo"
-              onMouseEnter={() => speakText(`Mensagem de ${titulo.toLowerCase()}`)}
+              onMouseEnter={() => safeSpeak(`Mensagem de ${titulo.toLowerCase()}`)}
+              onMouseLeave={stopSpeech}
               onFocus={() =>
                 handleFocusWithKeyboard(`Mensagem de ${titulo.toLowerCase()}`)
               }
@@ -41,7 +69,8 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
 
             <p
               id="modal-mensagem"
-              onMouseEnter={() => speakText(message)}
+              onMouseEnter={() => safeSpeak(message)}
+              onMouseLeave={stopSpeech}
               onFocus={() => handleFocusWithKeyboard(message)}
               tabIndex={0}
             >
@@ -50,12 +79,18 @@ export default function ModalMensagem({ isOpen, onClose, type = "erro", message 
 
             <button
               className={styles.botaoFechar}
-              onClick={onClose}
+              onClick={() => {
+                stopSpeech();
+                onClose();
+              }}
               onMouseEnter={() =>
-                speakText("Botão fechar modal. Pressione Enter para fechar.")
+                safeSpeak("Botão fechar modal. Pressione Enter para fechar.")
               }
+              onMouseLeave={stopSpeech}
               onFocus={() =>
-                handleFocusWithKeyboard("Botão fechar modal. Pressione Enter para fechar.")
+                handleFocusWithKeyboard(
+                  "Botão fechar modal. Pressione Enter para fechar."
+                )
               }
               autoFocus
               aria-label="Fechar mensagem"

@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+
+const SPRING_URL = process.env.NEXT_PUBLIC_SPRING_API_URL;
+
+export async function GET() {
+  try {
+    const response = await fetch(`${SPRING_URL}/cityinclui/restaurantes/top5`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+
+    const contentType =
+      response.headers.get("content-type") || "application/json";
+    const responseBody = await response.text();
+
+    return new NextResponse(responseBody, {
+      status: response.status,
+      headers: { "content-type": contentType },
+    });
+  } catch (err) {
+    console.error("Erro no Proxy (GET /restaurantes):", err);
+    return NextResponse.json(
+      { message: "Erro interno do servidor Next.js", detail: err.message },
+      { status: 500 }
+    );
+  }
+}

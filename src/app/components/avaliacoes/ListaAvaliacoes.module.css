@@ -1,0 +1,62 @@
+.semAvaliacoes {
+  color: #666;
+  font-style: italic;
+}
+
+
+.listaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+
+.reviewItem {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.userIcon {
+  background: #eee;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+
+.nomeCliente {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+
+.dataCriacao {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.rating {
+  margin-bottom: 5px;
+}
+
+.comentario {
+  color: #444;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
