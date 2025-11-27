@@ -79,7 +79,7 @@ export default function EditarPageOwner() {
       );
 
       const idRestaurante = updatedData.id || dadosRestaurante.id;
-      
+
       stopSpeech();
       router.refresh();
       router.push(`/restaurante/${idRestaurante}`);
@@ -102,11 +102,17 @@ export default function EditarPageOwner() {
 
   if (!dadosRestaurante) {
     return (
-      <div 
+      <div
         className={styles.errorContainer}
         tabIndex={0}
-        onMouseEnter={() => safeSpeak("Erro. Não foi possível carregar os dados. Recarregue a página.")}
-        onFocus={() => handleFocusWithKeyboard("Erro. Não foi possível carregar os dados.")}
+        onMouseEnter={() =>
+          safeSpeak(
+            "Erro. Não foi possível carregar os dados. Recarregue a página."
+          )
+        }
+        onFocus={() =>
+          handleFocusWithKeyboard("Erro. Não foi possível carregar os dados.")
+        }
       >
         Não foi possível carregar os dados. Recarregue a página.
       </div>
@@ -115,8 +121,8 @@ export default function EditarPageOwner() {
 
   return (
     <div className={styles.pageWrapper}>
-      <button 
-        onClick={handleCancelar} 
+      <button
+        onClick={handleCancelar}
         className={styles.backButton}
         onMouseEnter={() => safeSpeak("Botão Voltar")}
         onMouseLeave={stopSpeech}
@@ -125,22 +131,30 @@ export default function EditarPageOwner() {
         ← Voltar
       </button>
 
-      <h1 
+      <h1
         className={styles.title}
         tabIndex={0}
         onMouseEnter={() => safeSpeak("Editar Informações do Restaurante")}
         onMouseLeave={stopSpeech}
-        onFocus={() => handleFocusWithKeyboard("Editar Informações do Restaurante")}
+        onFocus={() =>
+          handleFocusWithKeyboard("Editar Informações do Restaurante")
+        }
       >
         Editar Informações do Restaurante
       </h1>
-      
-      <p 
+
+      <p
         className={styles.subtitle}
         tabIndex={0}
-        onMouseEnter={() => safeSpeak("Atualize as informações do seu restaurante abaixo")}
+        onMouseEnter={() =>
+          safeSpeak("Atualize as informações do seu restaurante abaixo")
+        }
         onMouseLeave={stopSpeech}
-        onFocus={() => handleFocusWithKeyboard("Atualize as informações do seu restaurante abaixo")}
+        onFocus={() =>
+          handleFocusWithKeyboard(
+            "Atualize as informações do seu restaurante abaixo"
+          )
+        }
       >
         Atualize as informações do seu restaurante abaixo
       </p>
@@ -153,7 +167,7 @@ export default function EditarPageOwner() {
 
       {salvando && (
         <div className={styles.savingOverlay}>
-          <div 
+          <div
             className={styles.savingBox}
             role="alert"
             onMouseEnter={() => safeSpeak("Aguarde. Salvando alterações...")}

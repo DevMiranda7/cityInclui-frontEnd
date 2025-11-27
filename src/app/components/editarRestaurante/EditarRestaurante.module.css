@@ -1,22 +1,22 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 2rem; 
+  gap: 2rem;
   width: 100%;
   max-width: 48rem;
   margin: 0 auto;
   background-color: #ffffff;
   padding: 2.5rem;
   border-radius: 1rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  font-family: 'Inter', sans-serif;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  font-family: "Inter", sans-serif;
 }
 
 .gridRow {
   display: flex;
   gap: 1.5rem;
   flex-wrap: wrap;
-  width: 100%; 
+  width: 100%;
 }
 
 .inputGroup {
@@ -44,7 +44,7 @@
   border: 1px solid #d1d5db;
   transition: all 0.2s ease;
   font-size: 1rem;
-  width: 100%; 
+  width: 100%;
 }
 
 .inputField:focus {
@@ -57,7 +57,6 @@
   background-color: #f3f4f6;
   color: #6b7280;
   cursor: not-allowed;
-
 }
 
 .textareaField {
@@ -84,9 +83,9 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  margin-top: 1rem; 
+  margin-top: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid #f3f4f6; 
+  border-top: 1px solid #f3f4f6;
 }
 
 .saveButton {
@@ -110,11 +109,11 @@
 }
 
 .saveButton:disabled {
-  background-color: #9ca3af; 
+  background-color: #9ca3af;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .saveButton:disabled:hover {
-  background-color: #9ca3af; 
+  background-color: #9ca3af;
 }

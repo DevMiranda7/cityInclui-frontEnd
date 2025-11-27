@@ -9,7 +9,7 @@ import Acessibilidades from "../accessibility/Acessibilidades";
 export default function EditarRestaurante({ initialData, onSave, onCancel }) {
   const [formData, setFormData] = useState({});
   const [novaFoto, setNovaFoto] = useState(null);
-  
+
   const { safeSpeak, handleFocusWithKeyboard } = useSpeechSettings();
 
   const stopSpeech = () => {
@@ -65,8 +65,8 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
         <div className={styles.gridRow}>
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label 
-                htmlFor="nomeDoRestaurante" 
+              <label
+                htmlFor="nomeDoRestaurante"
                 className={styles.label}
                 onMouseEnter={() => safeSpeak("Rótulo Nome do Restaurante")}
                 onMouseLeave={stopSpeech}
@@ -76,7 +76,9 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               <button
                 type="button"
                 className={styles.speakButton}
-                onClick={() => safeSpeak("Nome do restaurante. Edite se necessário.")}
+                onClick={() =>
+                  safeSpeak("Nome do restaurante. Edite se necessário.")
+                }
                 aria-label="Ouvir descrição do campo Nome do Restaurante"
               >
                 🗣️
@@ -88,18 +90,23 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               className={styles.inputField}
               value={formData.nomeDoRestaurante || ""}
               onChange={handleChange}
-              
-              onMouseEnter={() => safeSpeak("Campo Nome do Restaurante. Clique para editar.")}
+              onMouseEnter={() =>
+                safeSpeak("Campo Nome do Restaurante. Clique para editar.")
+              }
               onMouseLeave={stopSpeech}
-              onClick={() => safeSpeak("Pode digitar o novo nome do restaurante.")}
-              onFocus={() => handleFocusWithKeyboard("Campo Nome do Restaurante")}
+              onClick={() =>
+                safeSpeak("Pode digitar o novo nome do restaurante.")
+              }
+              onFocus={() =>
+                handleFocusWithKeyboard("Campo Nome do Restaurante")
+              }
             />
           </div>
 
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label 
-                htmlFor="nomeDoAnunciante" 
+              <label
+                htmlFor="nomeDoAnunciante"
                 className={styles.label}
                 onMouseEnter={() => safeSpeak("Rótulo Seu Nome")}
                 onMouseLeave={stopSpeech}
@@ -121,8 +128,9 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               className={styles.inputField}
               value={formData.nomeDoAnunciante || ""}
               onChange={handleChange}
-              
-              onMouseEnter={() => safeSpeak("Campo Seu Nome. Clique para editar.")}
+              onMouseEnter={() =>
+                safeSpeak("Campo Seu Nome. Clique para editar.")
+              }
               onMouseLeave={stopSpeech}
               onClick={() => safeSpeak("Pode digitar seu nome.")}
               onFocus={() => handleFocusWithKeyboard("Campo Seu Nome")}
@@ -134,8 +142,8 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
 
         <div className={styles.inputGroup}>
           <div className={styles.labelContainer}>
-            <label 
-              htmlFor="descricao" 
+            <label
+              htmlFor="descricao"
               className={styles.label}
               onMouseEnter={() => safeSpeak("Rótulo Descrição")}
               onMouseLeave={stopSpeech}
@@ -145,7 +153,9 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             <button
               type="button"
               className={styles.speakButton}
-              onClick={() => safeSpeak("Descrição do restaurante. Mínimo 50 caracteres.")}
+              onClick={() =>
+                safeSpeak("Descrição do restaurante. Mínimo 50 caracteres.")
+              }
               aria-label="Ouvir descrição do campo Descrição"
             >
               🗣️
@@ -159,11 +169,16 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             maxLength="200"
             value={formData.descricao || ""}
             onChange={handleChange}
-            
-            onMouseEnter={() => safeSpeak("Campo de texto Descrição. Clique para editar.")}
+            onMouseEnter={() =>
+              safeSpeak("Campo de texto Descrição. Clique para editar.")
+            }
             onMouseLeave={stopSpeech}
-            onClick={() => safeSpeak("Pode digitar a descrição do restaurante.")}
-            onFocus={() => handleFocusWithKeyboard("Campo Descrição do restaurante")}
+            onClick={() =>
+              safeSpeak("Pode digitar a descrição do restaurante.")
+            }
+            onFocus={() =>
+              handleFocusWithKeyboard("Campo Descrição do restaurante")
+            }
           />
         </div>
 
@@ -172,7 +187,7 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
         <div className={styles.gridRow}>
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label 
+              <label
                 className={styles.label}
                 onMouseEnter={() => safeSpeak("Rótulo E-mail. Não editável.")}
                 onMouseLeave={stopSpeech}
@@ -187,17 +202,20 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               readOnly
               disabled
               title="Este campo não pode ser editado"
-              
-              onMouseEnter={() => safeSpeak("Este campo de e-mail não pode ser alterado.")}
+              onMouseEnter={() =>
+                safeSpeak("Este campo de e-mail não pode ser alterado.")
+              }
               onMouseLeave={stopSpeech}
-              onFocus={() => handleFocusWithKeyboard("Campo E-mail. Apenas leitura.")}
+              onFocus={() =>
+                handleFocusWithKeyboard("Campo E-mail. Apenas leitura.")
+              }
             />
           </div>
 
           <div className={styles.inputGroup}>
             <div className={styles.labelContainer}>
-              <label 
-                htmlFor="telefone" 
+              <label
+                htmlFor="telefone"
                 className={styles.label}
                 onMouseEnter={() => safeSpeak("Rótulo Telefone")}
                 onMouseLeave={stopSpeech}
@@ -221,15 +239,17 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
               onChange={handleTelefoneChange}
               maxLength={15}
               placeholder="(00) 00000-0000"
-              
-              onMouseEnter={() => safeSpeak("Campo Telefone. Clique para editar.")}
+              onMouseEnter={() =>
+                safeSpeak("Campo Telefone. Clique para editar.")
+              }
               onMouseLeave={stopSpeech}
               onClick={() => safeSpeak("Pode digitar o novo telefone.")}
-              onFocus={() => handleFocusWithKeyboard("Campo Telefone. Edite o número.")}
+              onFocus={() =>
+                handleFocusWithKeyboard("Campo Telefone. Edite o número.")
+              }
             />
           </div>
         </div>
-
 
         <UploadImagem
           onFileSelect={handleFileSelect}
@@ -242,26 +262,36 @@ export default function EditarRestaurante({ initialData, onSave, onCancel }) {
             type="button"
             className={styles.cancelButton}
             onClick={onCancel}
-            
             onMouseEnter={() => safeSpeak("Botão Cancelar")}
             onMouseLeave={stopSpeech}
             onFocus={() => handleFocusWithKeyboard("Botão Cancelar")}
           >
             Cancelar
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className={styles.saveButton}
             disabled={!podeSalvar}
-            title={!podeSalvar ? "Faça alguma alteração para salvar" : "Salvar alterações"}
-            
-            onMouseEnter={() => 
-              safeSpeak(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado. Nenhuma alteração detectada.")
+            title={
+              !podeSalvar
+                ? "Faça alguma alteração para salvar"
+                : "Salvar alterações"
+            }
+            onMouseEnter={() =>
+              safeSpeak(
+                podeSalvar
+                  ? "Botão Salvar Alterações"
+                  : "Botão Salvar desabilitado. Nenhuma alteração detectada."
+              )
             }
             onMouseLeave={stopSpeech}
-            onFocus={() => 
-              handleFocusWithKeyboard(podeSalvar ? "Botão Salvar Alterações" : "Botão Salvar desabilitado")
+            onFocus={() =>
+              handleFocusWithKeyboard(
+                podeSalvar
+                  ? "Botão Salvar Alterações"
+                  : "Botão Salvar desabilitado"
+              )
             }
           >
             Salvar Alterações
