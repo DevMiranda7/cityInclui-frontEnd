@@ -7,7 +7,8 @@
 - ## Gabriel Pigozzi
 - ## Gustavo Renner
 - ## Daniel Tolledo
-
+- ## Isaias Dias
+  
 #  CityInclui
 
  ## Projeto universitário, criado para ajudar pessoas com deficiência visual.
